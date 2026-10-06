@@ -118,7 +118,7 @@
     <string name="settings_status_bar">Status bar</string>
     <string name="settings_status_bar_hidden">Hidden</string>
     <string name="settings_status_bar_shown">Shown</string>
-    <string name="settings_battery">Battery line under the clock</string>
+    <string name="settings_battery">Battery on home</string>
     <string name="battery_level">Battery %1$d percent</string>
     <string name="setup_overlay_title">Allow Stilla to show on top</string>
     <string name="setup_overlay_hint">Lets the \"how long?\" card appear over watched apps. Switch it on for Stilla.</string>

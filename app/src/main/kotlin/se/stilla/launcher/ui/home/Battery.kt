@@ -36,8 +36,8 @@ import se.stilla.launcher.ui.theme.LocalTextScale
 import se.stilla.launcher.ui.theme.StillaColors
 import se.stilla.launcher.ui.theme.StillaType
 
-/** At or below this, the number shows under the line too. */
-private const val LOW_PERCENT = 20
+/** At or below this, faces without a number show the percent too. */
+internal const val LOW_PERCENT = 20
 
 /**
  * Battery as one short horizontal line under the clock: a faint track, and a
@@ -45,8 +45,7 @@ private const val LOW_PERCENT = 20
  * until the battery runs low; then the percent appears underneath.
  */
 @Composable
-fun BatteryLine(modifier: Modifier = Modifier) {
-    val percent = rememberBatteryPercent() ?: return
+fun BatteryLine(percent: Int, modifier: Modifier = Modifier) {
     val track = StillaColors.Outline
     val fill = StillaColors.Text
     val label = stringResource(R.string.battery_level, percent)
@@ -63,15 +62,21 @@ fun BatteryLine(modifier: Modifier = Modifier) {
                 drawLine(fill, Offset(0f, y), Offset(end, y), strokeWidth = thin * 2, cap = StrokeCap.Butt)
             }
         }
-        if (percent <= LOW_PERCENT) {
-            Text(text = "$percent %", style = StillaType.Small, modifier = Modifier.padding(top = 6.dp))
-        }
+        LowBatteryText(percent)
+    }
+}
+
+/** The percent in small quiet text, only once the battery runs low. */
+@Composable
+fun LowBatteryText(percent: Int) {
+    if (percent <= LOW_PERCENT) {
+        Text(text = "$percent %", style = StillaType.Small, modifier = Modifier.padding(top = 6.dp))
     }
 }
 
 /** The battery charge in percent, kept up to date while home is on screen. Null if unknown. */
 @Composable
-private fun rememberBatteryPercent(): Int? {
+internal fun rememberBatteryPercent(): Int? {
     if (LocalInspectionMode.current) return 72
     val context = LocalContext.current
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
