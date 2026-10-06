@@ -59,7 +59,7 @@ jobs:
           echo "STILLA_KEYSTORE_FILE=$RUNNER_TEMP/upload-key.jks" >> "$GITHUB_ENV"
 
       - name: Engine tests
-        run: ./gradlew :engine:test
+        run: bash ./gradlew :engine:test
 
       - name: Build and upload to internal testing
         env:
@@ -67,7 +67,7 @@ jobs:
           STILLA_KEY_ALIAS: ${{ secrets.STILLA_KEY_ALIAS }}
           STILLA_KEY_PASSWORD: ${{ secrets.STILLA_KEY_PASSWORD }}
           ANDROID_PUBLISHER_CREDENTIALS: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-        run: ./gradlew :app:publishReleaseBundle
+        run: bash ./gradlew :app:publishReleaseBundle
 
       - name: Remove the upload key
         if: always()
