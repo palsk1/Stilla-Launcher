@@ -41,8 +41,6 @@
     <string name="settings_about_text">Stilla %1$s. This app has no internet access.</string>
     <string name="cant_open">Couldn\'t open that</string>
     <!-- Mindful controls -->
-    <string name="watcher_label">Stilla app watcher</string>
-    <string name="watcher_description">Lets Stilla ask \"how long?\" when you open a watched app from a notification, Recents or another app, and send you home when your time is up. It only notices which app comes to the front. It never reads what is on the screen, and Stilla has no internet access.</string>
     <string name="menu_watch">Ask how long first</string>
     <string name="menu_unwatch">Stop asking how long</string>
     <string name="menu_block">Block…</string>

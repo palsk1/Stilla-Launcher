@@ -39,8 +39,6 @@
     <string name="settings_about">Om</string>
     <string name="settings_about_text">Stilla %1$s. Appen har ingen internetåtkomst.</string>
     <string name="cant_open">Kunde inte öppna</string>
-    <string name="watcher_label">Stillas appvakt</string>
-    <string name="watcher_description">Låter Stilla fråga \"hur länge?\" när du öppnar en bevakad app från en avisering, Senaste eller en annan app, och skicka dig hem när tiden är slut. Den märker bara vilken app som kommer fram. Den läser aldrig vad som står på skärmen, och Stilla har ingen internetåtkomst.</string>
     <string name="menu_watch">Fråga hur länge först</string>
     <string name="menu_unwatch">Sluta fråga hur länge</string>
     <string name="menu_block">Blockera…</string>
