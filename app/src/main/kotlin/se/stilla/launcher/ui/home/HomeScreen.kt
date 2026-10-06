@@ -93,6 +93,7 @@ fun HomeScreen(
     onPrevious: () -> Unit = {},
     onPlayPause: () -> Unit = {},
     onNext: () -> Unit = {},
+    showBattery: Boolean = true,
 ) {
     val workSuffix = stringResource(R.string.work_suffix)
     val openApps by rememberUpdatedState(onOpenApps)
@@ -152,6 +153,9 @@ fun HomeScreen(
                 onDate = onDate,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
+            if (showBattery) {
+                BatteryLine(modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp))
+            }
             if (nowPlaying != null) {
                 NowPlayingBar(
                     now = nowPlaying,
@@ -320,19 +324,21 @@ private fun ClockRing(
 
     // The ring grows with Stilla's text size, so XL never spills out of it.
     val ringSize = (184 * LocalTextScale.current).dp
+    val ringColor = StillaColors.Outline
+    val progressColor = StillaColors.Text
     Box(modifier = modifier.size(ringSize), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val stroke = 1.dp.toPx()
             val inset = 2.dp.toPx()
             drawCircle(
-                color = StillaColors.Outline,
+                color = ringColor,
                 radius = size.minDimension / 2f - inset,
                 style = Stroke(width = stroke),
             )
             if (progress > 0f) {
                 val d = size.minDimension - inset * 2
                 drawArc(
-                    color = StillaColors.Text,
+                    color = progressColor,
                     startAngle = -90f,
                     sweepAngle = 360f * progress.coerceIn(0f, 1f),
                     useCenter = false,

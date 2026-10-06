@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.semantics.contentDescription
@@ -54,18 +55,19 @@ fun NowPlayingBar(
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Control(stringResource(R.string.media_previous), onPrevious) { previous() }
+            Control(stringResource(R.string.media_previous), onPrevious) { previous(it) }
             Control(stringResource(if (now.playing) R.string.media_pause else R.string.media_play), onPlayPause) {
-                if (now.playing) pause() else play()
+                if (now.playing) pause(it) else play(it)
             }
-            Control(stringResource(R.string.media_next), onNext) { next() }
+            Control(stringResource(R.string.media_next), onNext) { next(it) }
         }
     }
 }
 
 @Composable
-private fun Control(label: String, onClick: () -> Unit, draw: DrawScope.() -> Unit) {
+private fun Control(label: String, onClick: () -> Unit, draw: DrawScope.(Color) -> Unit) {
     val glyph = (14 * LocalTextScale.current).dp
+    val color = StillaColors.Text
     Box(
         modifier = Modifier
             .quietClickable(onClick)
@@ -73,11 +75,11 @@ private fun Control(label: String, onClick: () -> Unit, draw: DrawScope.() -> Un
             .padding(16.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Canvas(modifier = Modifier.size(glyph), onDraw = draw)
+        Canvas(modifier = Modifier.size(glyph)) { draw(color) }
     }
 }
 
-private fun DrawScope.triangle(left: Float, right: Float, pointsRight: Boolean) {
+private fun DrawScope.triangle(left: Float, right: Float, pointsRight: Boolean, color: Color) {
     val path = Path().apply {
         if (pointsRight) {
             moveTo(left, 0f); lineTo(right, size.height / 2f); lineTo(left, size.height)
@@ -86,26 +88,26 @@ private fun DrawScope.triangle(left: Float, right: Float, pointsRight: Boolean) 
         }
         close()
     }
-    drawPath(path, StillaColors.Text)
+    drawPath(path, color)
 }
 
-private fun DrawScope.bar(x: Float, width: Float) =
-    drawRect(StillaColors.Text, topLeft = Offset(x, 0f), size = Size(width, size.height))
+private fun DrawScope.bar(x: Float, width: Float, color: Color) =
+    drawRect(color, topLeft = Offset(x, 0f), size = Size(width, size.height))
 
-private fun DrawScope.play() = triangle(size.width * 0.15f, size.width * 0.95f, pointsRight = true)
+private fun DrawScope.play(color: Color) = triangle(size.width * 0.15f, size.width * 0.95f, pointsRight = true, color)
 
-private fun DrawScope.pause() {
+private fun DrawScope.pause(color: Color) {
     val w = size.width * 0.28f
-    bar(size.width * 0.1f, w)
-    bar(size.width * 0.62f, w)
+    bar(size.width * 0.1f, w, color)
+    bar(size.width * 0.62f, w, color)
 }
 
-private fun DrawScope.next() {
-    triangle(0f, size.width * 0.75f, pointsRight = true)
-    bar(size.width * 0.8f, size.width * 0.14f)
+private fun DrawScope.next(color: Color) {
+    triangle(0f, size.width * 0.75f, pointsRight = true, color)
+    bar(size.width * 0.8f, size.width * 0.14f, color)
 }
 
-private fun DrawScope.previous() {
-    bar(size.width * 0.06f, size.width * 0.14f)
-    triangle(size.width * 0.25f, size.width, pointsRight = false)
+private fun DrawScope.previous(color: Color) {
+    bar(size.width * 0.06f, size.width * 0.14f, color)
+    triangle(size.width * 0.25f, size.width, pointsRight = false, color)
 }
