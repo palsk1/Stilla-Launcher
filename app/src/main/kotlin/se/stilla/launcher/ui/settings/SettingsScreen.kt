@@ -2,7 +2,8 @@ package se.stilla.launcher.ui.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -51,6 +52,8 @@ fun SettingsScreen(
     onOpenSetup: () -> Unit = {},
     hideStatusBar: Boolean = true,
     onHideStatusBar: (Boolean) -> Unit = {},
+    showBattery: Boolean = true,
+    onShowBattery: (Boolean) -> Unit = {},
 ) {
     val hidden = state.all.filter { it.hidden }
     val watched = state.all.filter { it.watched }
@@ -122,6 +125,9 @@ fun SettingsScreen(
                 options = listOf(
                     stringResource(R.string.settings_theme_black) to ThemeChoice.BLACK,
                     stringResource(R.string.settings_theme_grey) to ThemeChoice.DARK_GREY,
+                    stringResource(R.string.settings_theme_silver) to ThemeChoice.SILVER,
+                    stringResource(R.string.settings_theme_graphite) to ThemeChoice.GRAPHITE,
+                    stringResource(R.string.settings_theme_paper) to ThemeChoice.PAPER,
                 ),
                 selected = theme,
                 onSelect = onTheme,
@@ -136,6 +142,17 @@ fun SettingsScreen(
                 ),
                 selected = hideStatusBar,
                 onSelect = onHideStatusBar,
+            )
+        }
+        item { SubText(stringResource(R.string.settings_battery)) }
+        item {
+            ChoiceRow(
+                options = listOf(
+                    stringResource(R.string.settings_status_bar_shown) to true,
+                    stringResource(R.string.settings_status_bar_hidden) to false,
+                ),
+                selected = showBattery,
+                onSelect = onShowBattery,
             )
         }
         item { SubText(stringResource(R.string.settings_text_size)) }
@@ -169,10 +186,11 @@ fun SettingsScreen(
 
 private val TextSizes = listOf("S" to 0.85f, "M" to 1f, "L" to 1.15f, "XL" to 1.3f)
 
-/** A row of text choices; the chosen one is white and underlined, the rest quiet. */
+/** A row of text choices; the chosen one is bright and underlined, the rest quiet. Wraps when it doesn't fit. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun <T> ChoiceRow(options: List<Pair<String, T>>, selected: T, onSelect: (T) -> Unit) {
-    Row(
+    FlowRow(
         modifier = Modifier.fillMaxWidth().padding(start = StillaDimens.Gutter + SubIndent - 8.dp, end = StillaDimens.Gutter),
     ) {
         options.forEach { (label, value) ->

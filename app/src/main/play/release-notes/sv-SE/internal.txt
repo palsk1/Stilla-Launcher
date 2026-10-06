@@ -1,1 +1,2 @@
-Appnamnen på startsidan ligger nu närmare klockan.
+Tre nya teman: Silver, Grafit och Papper (Inställningar → Utseende).
+En tunn batterilinje under klockan. Den kan stängas av i inställningarna.

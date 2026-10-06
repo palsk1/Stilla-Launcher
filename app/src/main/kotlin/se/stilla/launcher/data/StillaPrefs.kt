@@ -74,6 +74,8 @@ class StillaPrefs(context: Context) {
 
     fun setHideStatusBar(hide: Boolean) = update { it.copy(hideStatusBar = hide) }
 
+    fun setShowBattery(show: Boolean) = update { it.copy(showBattery = show) }
+
     fun setSetupDone() = update { it.copy(setupDone = true) }
 
     @Synchronized
@@ -96,6 +98,7 @@ class StillaPrefs(context: Context) {
         textScale = sp.getFloat(K_TEXT_SCALE, 1f),
         setupDone = sp.getBoolean(K_SETUP_DONE, false),
         hideStatusBar = sp.getBoolean(K_HIDE_STATUS_BAR, true),
+        showBattery = sp.getBoolean(K_SHOW_BATTERY, true),
     )
 
     private fun write(s: PrefsState) {
@@ -108,6 +111,7 @@ class StillaPrefs(context: Context) {
             .putFloat(K_TEXT_SCALE, s.textScale)
             .putBoolean(K_SETUP_DONE, s.setupDone)
             .putBoolean(K_HIDE_STATUS_BAR, s.hideStatusBar)
+            .putBoolean(K_SHOW_BATTERY, s.showBattery)
             .apply()
         val e = renamesSp.edit().clear()
         s.renames.forEach { (k, v) -> e.putString(k, v) }
@@ -124,5 +128,6 @@ class StillaPrefs(context: Context) {
         private const val K_TEXT_SCALE = "text_scale"
         private const val K_SETUP_DONE = "setup_done"
         private const val K_HIDE_STATUS_BAR = "hide_status_bar"
+        private const val K_SHOW_BATTERY = "show_battery"
     }
 }

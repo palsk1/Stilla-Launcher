@@ -169,6 +169,7 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     fun blockApp(entry: AppEntry, durationMs: Long) = guard.blockApp(entry.appId, durationMs)
     fun setTextScale(scale: Float) = prefs.setTextScale(scale)
     fun setHideStatusBar(hide: Boolean) = prefs.setHideStatusBar(hide)
+    fun setShowBattery(show: Boolean) = prefs.setShowBattery(show)
 
     // Building the list
 

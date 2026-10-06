@@ -25,7 +25,7 @@ data class RawApp(
     val category: Distractions.Category = Distractions.Category.OTHER,
 )
 
-enum class ThemeChoice { BLACK, DARK_GREY }
+enum class ThemeChoice { BLACK, DARK_GREY, SILVER, GRAPHITE, PAPER }
 
 /** Your own settings, as stored on the phone. */
 data class PrefsState(
@@ -41,4 +41,6 @@ data class PrefsState(
     val setupDone: Boolean = false,
     /** Hide the status bar (and its notification icons) on Stilla's screens. */
     val hideStatusBar: Boolean = true,
+    /** The thin battery line under the clock. */
+    val showBattery: Boolean = true,
 )
