@@ -163,12 +163,12 @@ fun HomeScreen(
                 )
             }
 
-            // Favorites sit in the lower half, like the original.
+            // Favorites follow right under the clock; the free space goes below them.
             Box(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
-                contentAlignment = Alignment.BottomStart,
+                contentAlignment = Alignment.TopStart,
             ) {
-                Column {
+                Column(modifier = Modifier.padding(top = 40.dp)) {
                     if (favorites.isEmpty()) {
                         Text(
                             text = stringResource(R.string.home_hint),
