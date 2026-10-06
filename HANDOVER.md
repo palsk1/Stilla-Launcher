@@ -2,6 +2,9 @@
 
 Read this first, then README.md. Jan writes in Swedish; answer in Swedish.
 
+Jan is new to git and GitHub. `NYBORJARGUIDE.md` is his plain-Swedish guide (repo, commit, branch,
+push, PR, merge, the Play upload, the five secrets). Keep it current when his workflow changes.
+
 ## What Stilla is
 
 Jan's own minimalist Android launcher (replacement for the paid "minimalist phone" app):
@@ -49,6 +52,7 @@ already called "Stilla: Sleep & Meditation"). Phone: Samsung, Swedish UI, 3-butt
   - Repo secrets: `STILLA_UPLOAD_KEYSTORE_BASE64`, `STILLA_KEYSTORE_PASSWORD`, `STILLA_KEY_ALIAS`,
     `STILLA_KEY_PASSWORD`, `PLAY_SERVICE_ACCOUNT_JSON`. Jan adds them himself; never ask for the values.
   - Version code stays automatic (Play max + 1); uploads run one at a time.
+  - Pushes that only change `.md` files don't trigger an upload.
 - `bootstrapListing` fails with "Please migrate to the new publishing API". That only concerns
   the old in-app-products endpoint, so ignore it.
 - Before any wider release: privacy policy URL, store listing (sv-SE default, add en-US),

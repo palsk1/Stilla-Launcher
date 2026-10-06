@@ -1,4 +1,5 @@
-# Builds Stilla and uploads it to Google Play internal testing on every push to master.
+# Builds Stilla and uploads it to Google Play internal testing on every push to master,
+# except pushes that only change Markdown files (guides, README, HANDOVER).
 # Can also be started by hand: Actions → "Play internal testing" → Run workflow.
 #
 # Secrets (Settings → Secrets and variables → Actions), see HANDOVER.md:
@@ -12,6 +13,8 @@ name: Play internal testing
 on:
   push:
     branches: [master]
+    paths-ignore:
+      - '**.md'
   workflow_dispatch:
 
 # One upload at a time; a newer push waits instead of racing for the same version code.
