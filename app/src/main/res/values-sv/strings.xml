@@ -116,7 +116,7 @@
     <string name="settings_status_bar">Statusfält</string>
     <string name="settings_status_bar_hidden">Dolt</string>
     <string name="settings_status_bar_shown">Visas</string>
-    <string name="settings_battery">Batterilinje under klockan</string>
+    <string name="settings_battery">Batteri på hemskärmen</string>
     <string name="battery_level">Batteri %1$d procent</string>
     <string name="setup_overlay_title">Låt Stilla visas överst</string>
     <string name="setup_overlay_hint">Så att \"hur länge?\"-kortet kan visas över bevakade appar. Slå på för Stilla.</string>

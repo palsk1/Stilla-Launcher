@@ -23,7 +23,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** One theme's colors. Every theme keeps the same calm, text-only layout; only these change. */
+/** How a theme draws the clock and the battery on home. */
+enum class ClockFace {
+    /** The clock in a thin ring, battery as a short line under it. */
+    RING_LINE,
+    /** The clock in a thin ring, battery as a small dot travelling around it. */
+    RING_DOT,
+    /** The clock in a rounded frame, like a watch face; battery as ten small dots inside it. */
+    FRAME_DOTS,
+    /** A large, light clock with no frame; battery as a slim upright bar beside it. */
+    BARE_BAR,
+    /** A book-like serif clock between two short rules; battery as plain text. */
+    SERIF_TEXT,
+}
+
+/** One theme's colors and clock face. Every theme keeps the same calm, text-only layout. */
 @Immutable
 data class StillaPalette(
     val background: Color,
@@ -33,6 +47,7 @@ data class StillaPalette(
     val outline: Color,
     /** Light page: the phone's own bar icons turn dark. */
     val isLight: Boolean = false,
+    val face: ClockFace = ClockFace.RING_LINE,
 )
 
 private val Black = StillaPalette(
@@ -44,7 +59,7 @@ private val Black = StillaPalette(
 )
 
 /** For people who find true black harsh. */
-private val DarkGrey = Black.copy(background = Color(0xFF121212))
+private val DarkGrey = Black.copy(background = Color(0xFF121212), face = ClockFace.RING_DOT)
 
 /** Brushed aluminium: light cool grey with graphite text. */
 private val Silver = StillaPalette(
@@ -54,6 +69,7 @@ private val Silver = StillaPalette(
     surface = Color(0xFFD9DCE0),
     outline = Color(0xFF80868D),
     isLight = true,
+    face = ClockFace.FRAME_DOTS,
 )
 
 /** Silver turned down for the evening: dark slate with silver text. */
@@ -63,6 +79,7 @@ private val Graphite = StillaPalette(
     textQuiet = Color(0xFF8E949B),
     surface = Color(0xFF33373C),
     outline = Color(0xFF61676E),
+    face = ClockFace.BARE_BAR,
 )
 
 /** Warm off-white, like an e-ink reader. */
@@ -73,6 +90,7 @@ private val Paper = StillaPalette(
     surface = Color(0xFFF6F2EB),
     outline = Color(0xFF9E978C),
     isLight = true,
+    face = ClockFace.SERIF_TEXT,
 )
 
 fun ThemeChoice.palette(): StillaPalette = when (this) {
