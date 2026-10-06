@@ -31,6 +31,9 @@
     <string name="settings_display">Display</string>
     <string name="settings_theme_black">Black</string>
     <string name="settings_theme_grey">Dark grey</string>
+    <string name="settings_theme_silver">Silver</string>
+    <string name="settings_theme_graphite">Graphite</string>
+    <string name="settings_theme_paper">Paper</string>
     <string name="settings_text_size">Text size</string>
     <string name="settings_hidden">Hidden apps</string>
     <string name="settings_hidden_none">None. Long-press an app and choose Hide.</string>
@@ -115,6 +118,8 @@
     <string name="settings_status_bar">Status bar</string>
     <string name="settings_status_bar_hidden">Hidden</string>
     <string name="settings_status_bar_shown">Shown</string>
+    <string name="settings_battery">Battery on home</string>
+    <string name="battery_level">Battery %1$d percent</string>
     <string name="setup_overlay_title">Allow Stilla to show on top</string>
     <string name="setup_overlay_hint">Lets the \"how long?\" card appear over watched apps. Switch it on for Stilla.</string>
     <string name="setup_usage_title">Allow usage access</string>

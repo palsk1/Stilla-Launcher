@@ -30,6 +30,9 @@
     <string name="settings_display">Utseende</string>
     <string name="settings_theme_black">Svart</string>
     <string name="settings_theme_grey">Mörkgrå</string>
+    <string name="settings_theme_silver">Silver</string>
+    <string name="settings_theme_graphite">Grafit</string>
+    <string name="settings_theme_paper">Papper</string>
     <string name="settings_text_size">Textstorlek</string>
     <string name="settings_hidden">Dolda appar</string>
     <string name="settings_hidden_none">Inga. Håll in en app och välj Dölj.</string>
@@ -113,6 +116,8 @@
     <string name="settings_status_bar">Statusfält</string>
     <string name="settings_status_bar_hidden">Dolt</string>
     <string name="settings_status_bar_shown">Visas</string>
+    <string name="settings_battery">Batteri på hemskärmen</string>
+    <string name="battery_level">Batteri %1$d procent</string>
     <string name="setup_overlay_title">Låt Stilla visas överst</string>
     <string name="setup_overlay_hint">Så att \"hur länge?\"-kortet kan visas över bevakade appar. Slå på för Stilla.</string>
     <string name="setup_usage_title">Ge användningsåtkomst</string>

@@ -84,6 +84,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onPrevious = vm.media::previous,
                     onPlayPause = vm.media::playPause,
                     onNext = vm.media::next,
+                    showBattery = prefs.showBattery,
                 )
                 Screen.Apps -> AppListScreen(
                     state = state,
@@ -109,6 +110,8 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onOpenSetup = vm::openSetup,
                     hideStatusBar = prefs.hideStatusBar,
                     onHideStatusBar = vm::setHideStatusBar,
+                    showBattery = prefs.showBattery,
+                    onShowBattery = vm::setShowBattery,
                 )
                 Screen.Setup -> SetupScreen(
                     status = setup,

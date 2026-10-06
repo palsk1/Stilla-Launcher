@@ -93,6 +93,7 @@ fun HomeScreen(
     onPrevious: () -> Unit = {},
     onPlayPause: () -> Unit = {},
     onNext: () -> Unit = {},
+    showBattery: Boolean = true,
 ) {
     val workSuffix = stringResource(R.string.work_suffix)
     val openApps by rememberUpdatedState(onOpenApps)
@@ -147,9 +148,10 @@ fun HomeScreen(
             }
 
             Spacer(Modifier.height(32.dp))
-            ClockRing(
+            HomeClock(
                 onClock = onClock,
                 onDate = onDate,
+                showBattery = showBattery,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
             if (nowPlaying != null) {
@@ -299,83 +301,3 @@ private fun Favorites(
         }
     }
 }
-
-/**
- * The clock inside a thin ring. [progress] (0..1) will later show today's
- * screen time against your daily goal; for now the ring is empty.
- */
-@Composable
-private fun ClockRing(
-    onClock: () -> Unit,
-    onDate: () -> Unit,
-    modifier: Modifier = Modifier,
-    progress: Float = 0f,
-) {
-    val context = LocalContext.current
-    val locale = LocalConfiguration.current.locales[0]
-    val now = rememberMinuteClock()
-    val is24 = DateFormat.is24HourFormat(context)
-    val time = now.format(DateTimeFormatter.ofPattern(if (is24) "HH:mm" else "h:mm", locale))
-    val date = now.format(DateTimeFormatter.ofPattern("EEEE d MMMM", locale))
-
-    // The ring grows with Stilla's text size, so XL never spills out of it.
-    val ringSize = (184 * LocalTextScale.current).dp
-    Box(modifier = modifier.size(ringSize), contentAlignment = Alignment.Center) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val stroke = 1.dp.toPx()
-            val inset = 2.dp.toPx()
-            drawCircle(
-                color = StillaColors.Outline,
-                radius = size.minDimension / 2f - inset,
-                style = Stroke(width = stroke),
-            )
-            if (progress > 0f) {
-                val d = size.minDimension - inset * 2
-                drawArc(
-                    color = StillaColors.Text,
-                    startAngle = -90f,
-                    sweepAngle = 360f * progress.coerceIn(0f, 1f),
-                    useCenter = false,
-                    topLeft = Offset(inset, inset),
-                    size = Size(d, d),
-                    style = Stroke(width = stroke * 2),
-                )
-            }
-        }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = time, style = StillaType.Clock, modifier = Modifier.quietClickable(onClock))
-            Text(text = date, style = StillaType.Date, maxLines = 1, softWrap = false, modifier = Modifier.quietClickable(onDate))
-        }
-    }
-}
-
-/** The current time, updated each minute, but only while home is on screen. */
-@Composable
-private fun rememberMinuteClock(): ZonedDateTime {
-    // Previews in Android Studio show a fixed time and skip the system broadcast.
-    if (LocalInspectionMode.current) return PREVIEW_TIME
-    val context = LocalContext.current
-    val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
-    val visible = lifecycleState.isAtLeast(Lifecycle.State.STARTED)
-    var now by remember { mutableStateOf(ZonedDateTime.now()) }
-
-    DisposableEffect(visible) {
-        if (!visible) return@DisposableEffect onDispose { }
-        now = ZonedDateTime.now()
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(c: Context?, intent: Intent?) {
-                now = ZonedDateTime.now()
-            }
-        }
-        val filter = IntentFilter().apply {
-            addAction(Intent.ACTION_TIME_TICK)
-            addAction(Intent.ACTION_TIME_CHANGED)
-            addAction(Intent.ACTION_TIMEZONE_CHANGED)
-        }
-        ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
-        onDispose { context.unregisterReceiver(receiver) }
-    }
-    return now
-}
-
-private val PREVIEW_TIME: ZonedDateTime = ZonedDateTime.of(2026, 10, 7, 9, 41, 0, 0, java.time.ZoneId.of("Europe/Stockholm"))
