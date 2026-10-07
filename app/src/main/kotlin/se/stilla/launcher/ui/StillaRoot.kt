@@ -18,6 +18,8 @@ import se.stilla.launcher.ui.apps.AppListScreen
 import se.stilla.launcher.ui.apps.AppMenuSheet
 import se.stilla.launcher.ui.apps.RenameDialog
 import se.stilla.launcher.ui.home.HomeScreen
+import se.stilla.launcher.ui.schedules.ScheduleEditScreen
+import se.stilla.launcher.ui.schedules.SchedulesScreen
 import se.stilla.launcher.ui.settings.SettingsScreen
 import se.stilla.launcher.ui.setup.SetupScreen
 import se.stilla.launcher.ui.theme.LocalBackground
@@ -57,6 +59,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
     val watcherEnabled by vm.watcherEnabled.collectAsStateWithLifecycle()
     val setup by vm.setup.collectAsStateWithLifecycle()
     val nowPlaying by vm.media.now.collectAsStateWithLifecycle()
+    val editing by vm.editing.collectAsStateWithLifecycle()
 
     // Back goes Settings → Apps → Home, and does nothing on Home.
     BackHandler(enabled = true) { vm.back() }
@@ -112,7 +115,23 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onHideStatusBar = vm::setHideStatusBar,
                     showBattery = prefs.showBattery,
                     onShowBattery = vm::setShowBattery,
+                    onOpenSchedules = vm::openSchedules,
                 )
+                Screen.Schedules -> SchedulesScreen(
+                    schedules = state.rules.schedules,
+                    onOpen = vm::editSchedule,
+                    onNew = vm::newSchedule,
+                )
+                Screen.ScheduleEdit -> editing?.let { draft ->
+                    ScheduleEditScreen(
+                        initial = draft,
+                        isNew = state.rules.schedules.none { it.id == draft.id },
+                        runningUntil = state.rules.schedules.firstOrNull { it.id == draft.id }?.let(vm::runningUntil),
+                        onSave = vm::saveSchedule,
+                        onDelete = { vm.deleteSchedule(draft.id) },
+                        onCancel = vm::openSchedules,
+                    )
+                }
                 Screen.Setup -> SetupScreen(
                     status = setup,
                     onHome = actions::requestDefaultHome,

@@ -4,7 +4,7 @@ package se.stilla.engine
  * Apps Stilla must never prompt for, block or draw over: calls, messages,
  * alarms, calendar and BankID. Stilla must never trap you away from help.
  *
- * Phone and emergency apps are permanent. The rest are defaults you can
+ * Phone, emergency and clock (alarm) apps are permanent. The rest are defaults you can
  * change; you can also add your own (e.g. 1177, your bank).
  */
 object Essentials {
@@ -20,6 +20,10 @@ object Essentials {
         "com.android.emergency",
         "com.google.android.apps.safetyhub",
         "com.samsung.android.emergency",
+        // Clock and alarms: a ringing alarm must never be covered or blocked.
+        "com.google.android.deskclock",
+        "com.sec.android.app.clockpackage", // Samsung
+        "com.android.deskclock",
     )
 
     /** On by default; you can turn them off. */
@@ -28,10 +32,6 @@ object Essentials {
         "com.google.android.apps.messaging",
         "com.samsung.android.messaging",
         "com.android.mms",
-        // Clock and alarms
-        "com.google.android.deskclock",
-        "com.sec.android.app.clockpackage",
-        "com.android.deskclock",
         // Calendar
         "com.samsung.android.calendar",
         "com.google.android.calendar",

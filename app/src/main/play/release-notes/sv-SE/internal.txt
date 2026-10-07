@@ -1,4 +1,3 @@
-Varje tema har nu en egen klocka och ett eget batteri:
-Svart: ring och batterilinje. Mörkgrå: ring med en batteriprick.
-Silver: klocka i ram med tio batteriprickar. Grafit: stor tunn klocka med batteristapel.
-Papper: klocka i bokstil med batteriet i text.
+Scheman: stäng av appar vid vissa tider, till exempel Natt 22–07.
+Inställningar → Scheman. Välj tidstjuvarna eller alla appar, helt stopp eller fråga först.
+Klocka och larm är nu alltid nödvändiga: Stilla täcker eller blockerar aldrig ett larm.
