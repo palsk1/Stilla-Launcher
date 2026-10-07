@@ -15,17 +15,26 @@ import se.stilla.engine.Alphabet
 import se.stilla.engine.AppId
 import se.stilla.engine.OnTimeOver
 import se.stilla.engine.AppSearch
+import se.stilla.engine.Commitment
 import se.stilla.engine.Essentials
+import se.stilla.engine.Schedule
+import se.stilla.engine.Strictness
 import se.stilla.engine.SearchItem
 import se.stilla.launcher.data.PrefsState
 import se.stilla.launcher.data.RawApp
 import se.stilla.launcher.data.RulesState
+import se.stilla.launcher.data.SavedSchedule
+import se.stilla.launcher.data.ScheduleScope
 import se.stilla.launcher.data.ThemeChoice
 import se.stilla.launcher.setup.SetupStatus
 import java.text.Collator
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Locale
 
-enum class Screen { Home, Apps, Settings, Setup }
+enum class Screen { Home, Apps, Settings, Setup, Schedules, ScheduleEdit }
 
 /** One row in the app list: the app plus your settings for it. */
 data class AppEntry(
@@ -92,6 +101,10 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     private val _menuFor = MutableStateFlow<String?>(null)
     val menuFor: StateFlow<String?> = _menuFor.asStateFlow()
 
+    /** The schedule open for editing (a new one has an id not saved yet). */
+    private val _editing = MutableStateFlow<SavedSchedule?>(null)
+    val editing: StateFlow<SavedSchedule?> = _editing.asStateFlow()
+
     /** Key of the app being renamed. */
     private val _renaming = MutableStateFlow<String?>(null)
     val renaming: StateFlow<String?> = _renaming.asStateFlow()
@@ -119,6 +132,70 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
         _screen.value = Screen.Setup
     }
 
+    fun openSchedules() {
+        _editing.value = null
+        _screen.value = Screen.Schedules
+    }
+
+    /** A new schedule starts as "Night, 22–07 every day, time-wasters, fully off". */
+    fun newSchedule() {
+        val first = ruleStore.state.value.schedules.isEmpty()
+        _editing.value = SavedSchedule(
+            schedule = Schedule(
+                id = "s" + System.currentTimeMillis(),
+                name = if (first) getApplication<StillaApp>().getString(R.string.schedule_default_name) else "",
+                days = DayOfWeek.entries.toSet(),
+                start = LocalTime.of(22, 0),
+                end = LocalTime.of(7, 0),
+                target = se.stilla.engine.Target.Apps(emptySet()),
+                strictness = Strictness.HARD,
+            ),
+            scope = ScheduleScope.WATCHED,
+        )
+        _screen.value = Screen.ScheduleEdit
+    }
+
+    fun editSchedule(id: String) {
+        _editing.value = ruleStore.state.value.schedules.firstOrNull { it.id == id } ?: return
+        _screen.value = Screen.ScheduleEdit
+    }
+
+    /**
+     * When the schedule is running right now, it can only be made stricter:
+     * turning it off, shortening it or covering fewer apps waits until it ends.
+     * Returns that end when the change is refused, or null when it was saved.
+     */
+    fun saveSchedule(new: SavedSchedule): Instant? {
+        val old = ruleStore.state.value.schedules.firstOrNull { it.id == new.id }
+        runningUntilIfLoosening(old, new)?.let { return it }
+        val name = new.schedule.name.trim().ifBlank { getApplication<StillaApp>().getString(R.string.schedule_unnamed) }
+        ruleStore.saveSchedule(new.copy(schedule = new.schedule.copy(name = name)))
+        openSchedules()
+        return null
+    }
+
+    /** Same rule as [saveSchedule]: a running schedule can't be deleted until it ends. */
+    fun deleteSchedule(id: String): Instant? {
+        val old = ruleStore.state.value.schedules.firstOrNull { it.id == id } ?: return null
+        runningUntilIfLoosening(old, null)?.let { return it }
+        ruleStore.deleteSchedule(id)
+        openSchedules()
+        return null
+    }
+
+    /** When [old] is active now, when it ends. */
+    fun runningUntil(old: SavedSchedule): Instant? =
+        old.schedule.activeWindow(Instant.now(), ZoneId.systemDefault())?.endInstant
+
+    private fun runningUntilIfLoosening(old: SavedSchedule?, new: SavedSchedule?): Instant? {
+        old ?: return null
+        val until = runningUntil(old) ?: return null
+        val all = state.value.all.map { it.appId }.toSet()
+        val watched = state.value.all.filter { it.watched }.map { it.appId }.toSet()
+        val loosening = Commitment.isLoosening(old.resolved(watched, all), new?.resolved(watched, all))
+        return if (loosening) until else null
+    }
+
     /** "All set" or "Later": the checklist won't open by itself again. */
     fun finishSetup() {
         prefs.setSetupDone()
@@ -135,6 +212,8 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
         Screen.Apps -> { goHome(); true }
         Screen.Settings -> { _screen.value = Screen.Apps; true }
         Screen.Setup -> { finishSetup(); true }
+        Screen.Schedules -> { _screen.value = Screen.Settings; true }
+        Screen.ScheduleEdit -> { openSchedules(); true }
     }
 
     fun setQuery(q: String) {
