@@ -29,6 +29,12 @@ class EssentialsTest {
         assertTrue(!Essentials.canRemove("com.samsung.android.dialer"))
     }
 
+    @Test fun alarmClockIsAlwaysEssential() {
+        val clock = "com.sec.android.app.clockpackage"
+        assertTrue(Essentials.isEssential(clock, removed = setOf(clock)))
+        assertTrue(!Essentials.canRemove(clock))
+    }
+
     @Test fun defaultsCanBeTurnedOff() {
         assertTrue(Essentials.isEssential("com.bankid.bus"))
         assertTrue(!Essentials.isEssential("com.bankid.bus", removed = setOf("com.bankid.bus")))

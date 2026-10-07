@@ -51,27 +51,42 @@ class ForegroundPoller(
 
     private fun check() {
         val now = System.currentTimeMillis()
-        val latest = try {
-            val events = usm.queryEvents(since, now)
-            val e = UsageEvents.Event()
-            var pkg: String? = null
-            var lastTs = since
-            while (events.hasNextEvent()) {
-                events.getNextEvent(e)
-                if (e.timeStamp > lastTs) lastTs = e.timeStamp
-                if (e.eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
-                    val p = e.packageName ?: continue
-                    if (p in IGNORED || p == currentKeyboard()) continue
-                    pkg = p
-                }
-            }
-            since = lastTs + 1
-            pkg
-        } catch (e: Exception) {
-            Log.w("Stilla", "Usage events failed", e)
-            null
-        }
+        val (latest, lastTs) = latestResumed(since, now) ?: return
+        since = lastTs + 1
         if (latest != null) onFront(latest)
+    }
+
+    /**
+     * The app whose screen came to the front most recently in the last
+     * [lookBackMs], or null if none did (or Usage access is off). Used right
+     * before a card opens, so a card never lands on top of a ringing alarm.
+     */
+    fun latestInFront(lookBackMs: Long = 6 * 60 * 60 * 1000L): String? {
+        if (!hasUsageAccess(context)) return null
+        val now = System.currentTimeMillis()
+        return latestResumed(now - lookBackMs, now)?.first
+    }
+
+    /** The last app resumed between [from] and [to], and the newest event time seen. Null if reading failed. */
+    private fun latestResumed(from: Long, to: Long): Pair<String?, Long>? = try {
+        val events = usm.queryEvents(from, to)
+        val e = UsageEvents.Event()
+        var pkg: String? = null
+        var lastTs = from
+        val keyboard = currentKeyboard()
+        while (events.hasNextEvent()) {
+            events.getNextEvent(e)
+            if (e.timeStamp > lastTs) lastTs = e.timeStamp
+            if (e.eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
+                val p = e.packageName ?: continue
+                if (p in IGNORED || p == keyboard) continue
+                pkg = p
+            }
+        }
+        pkg to lastTs
+    } catch (e: Exception) {
+        Log.w("Stilla", "Usage events failed", e)
+        null
     }
 
     private fun currentKeyboard(): String? =
