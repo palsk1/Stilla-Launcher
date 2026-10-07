@@ -59,6 +59,7 @@ fun AppMenuSheet(
     onUninstall: () -> Unit,
     onToggleWatched: () -> Unit,
     onBlock: (Long) -> Unit,
+    onAddToFolder: () -> Unit = {},
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var choosingBlock by remember(entry.key) { mutableStateOf(false) }
@@ -99,6 +100,7 @@ fun AppMenuSheet(
                     favoritesFull -> MenuItem(stringResource(R.string.menu_home_full), {}, enabled = false)
                     else -> MenuItem(stringResource(R.string.menu_add_home), andThen(onToggleFavorite, onDismiss))
                 }
+                MenuItem(stringResource(R.string.menu_add_to_folder), onAddToFolder)
                 MenuItem(stringResource(R.string.menu_rename), onRename)
                 MenuItem(
                     stringResource(if (entry.hidden) R.string.menu_unhide else R.string.menu_hide),

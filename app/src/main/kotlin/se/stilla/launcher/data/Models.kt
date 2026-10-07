@@ -25,6 +25,9 @@ data class RawApp(
     val category: Distractions.Category = Distractions.Category.OTHER,
 )
 
+/** A named group of apps, opened by swiping up on home. [apps] are app keys, in the order you added them. */
+data class Folder(val id: String, val name: String, val apps: List<String> = emptyList())
+
 enum class ThemeChoice { BLACK, DARK_GREY, SILVER, GRAPHITE, PAPER }
 
 /** Your own settings, as stored on the phone. */
@@ -43,4 +46,8 @@ data class PrefsState(
     val hideStatusBar: Boolean = true,
     /** The thin battery line under the clock. */
     val showBattery: Boolean = true,
+    /** Your folders, in the order shown. */
+    val folders: List<Folder> = emptyList(),
+    /** Swipe up on home opens the folders (otherwise it opens the app list). */
+    val foldersOn: Boolean = false,
 )

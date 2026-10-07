@@ -175,4 +175,20 @@
     <string name="schedule_refused">Det går inte medan schemat pågår. Försök igen efter %1$s.</string>
     <string name="schedule_save">Spara</string>
     <string name="schedule_delete">Ta bort schemat</string>
+    <string name="folders_title">Mappar</string>
+    <string name="folders_none">Inga mappar än. Håll in en app och välj Lägg i mapp…</string>
+    <string name="folders_hold_hint">Håll in en mapp för att byta namn eller ta bort den. Svep nedåt för att gå hem.</string>
+    <string name="folder_empty">Tom. Håll in en app och välj Lägg i mapp…</string>
+    <string name="folder_full">Mappen börjar bli full. Kanske dela upp den?</string>
+    <string name="folders_home">Hem</string>
+    <string name="folders_all_apps">Alla appar</string>
+    <string name="menu_add_to_folder">Lägg i mapp…</string>
+    <string name="folder_picker_title">Lägg %1$s i mapp</string>
+    <string name="folder_new_hint">Ny mapp…</string>
+    <string name="folder_create">Skapa</string>
+    <string name="folder_done">Klar</string>
+    <string name="folder_edit_title">Mapp</string>
+    <string name="folder_delete">Ta bort mappen</string>
+    <string name="folder_delete_info">Tar du bort mappen finns apparna kvar i listan.</string>
+    <string name="settings_folders">Mappar (svep upp på hemskärmen)</string>
 </resources>

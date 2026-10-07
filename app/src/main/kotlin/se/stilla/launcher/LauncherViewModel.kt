@@ -34,7 +34,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Locale
 
-enum class Screen { Home, Apps, Settings, Setup, Schedules, ScheduleEdit }
+enum class Screen { Home, Apps, Settings, Setup, Schedules, ScheduleEdit, Folders, Folder }
 
 /** One row in the app list: the app plus your settings for it. */
 data class AppEntry(
@@ -51,6 +51,12 @@ data class AppEntry(
     val watched: Boolean,
 )
 
+/** A folder with the apps in it that are still installed. */
+data class FolderView(val folder: se.stilla.launcher.data.Folder, val apps: List<AppEntry>) {
+    val id: String get() = folder.id
+    val name: String get() = folder.name
+}
+
 data class LauncherState(
     val all: List<AppEntry> = emptyList(),
     val visible: List<AppEntry> = emptyList(),
@@ -60,6 +66,7 @@ data class LauncherState(
     val search: AppSearch<String> = AppSearch(emptyList()),
     val favoritesFull: Boolean = false,
     val rules: RulesState = RulesState(),
+    val folders: List<FolderView> = emptyList(),
 )
 
 class LauncherViewModel(app: Application) : AndroidViewModel(app) {
@@ -105,6 +112,18 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     private val _editing = MutableStateFlow<SavedSchedule?>(null)
     val editing: StateFlow<SavedSchedule?> = _editing.asStateFlow()
 
+    /** The folder open on screen. */
+    private val _openFolder = MutableStateFlow<String?>(null)
+    val openFolder: StateFlow<String?> = _openFolder.asStateFlow()
+
+    /** Key of the app whose "Add to folder" list is open. */
+    private val _folderPickerFor = MutableStateFlow<String?>(null)
+    val folderPickerFor: StateFlow<String?> = _folderPickerFor.asStateFlow()
+
+    /** The folder whose rename/delete card is open. */
+    private val _editingFolder = MutableStateFlow<String?>(null)
+    val editingFolder: StateFlow<String?> = _editingFolder.asStateFlow()
+
     /** Key of the app being renamed. */
     private val _renaming = MutableStateFlow<String?>(null)
     val renaming: StateFlow<String?> = _renaming.asStateFlow()
@@ -116,6 +135,19 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
         _query.value = ""
         _menuFor.value = null
         _renaming.value = null
+        _openFolder.value = null
+        _folderPickerFor.value = null
+        _editingFolder.value = null
+    }
+
+    fun openFolders() {
+        _openFolder.value = null
+        _screen.value = Screen.Folders
+    }
+
+    fun openFolder(id: String) {
+        _openFolder.value = id
+        _screen.value = Screen.Folder
     }
 
     fun openApps() {
@@ -214,6 +246,8 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
         Screen.Setup -> { finishSetup(); true }
         Screen.Schedules -> { _screen.value = Screen.Settings; true }
         Screen.ScheduleEdit -> { openSchedules(); true }
+        Screen.Folders -> { goHome(); true }
+        Screen.Folder -> { openFolders(); true }
     }
 
     fun setQuery(q: String) {
@@ -250,6 +284,23 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     fun setHideStatusBar(hide: Boolean) = prefs.setHideStatusBar(hide)
     fun setShowBattery(show: Boolean) = prefs.setShowBattery(show)
 
+    // Folders
+
+    fun setFoldersOn(on: Boolean) = prefs.setFoldersOn(on)
+    fun showFolderPicker(key: String) { _menuFor.value = null; _folderPickerFor.value = key }
+    fun dismissFolderPicker() { _folderPickerFor.value = null }
+    fun createFolder(name: String, appKey: String?) = prefs.createFolder(name, appKey)
+    fun toggleInFolder(folderId: String, appKey: String) = prefs.toggleInFolder(folderId, appKey)
+    fun editFolder(id: String) { _editingFolder.value = id }
+    fun dismissEditFolder() { _editingFolder.value = null }
+    fun renameFolder(id: String, name: String) { prefs.renameFolder(id, name); _editingFolder.value = null }
+
+    fun deleteFolder(id: String) {
+        prefs.deleteFolder(id)
+        _editingFolder.value = null
+        if (_openFolder.value == id) openFolders()
+    }
+
     // Building the list
 
     private fun build(apps: List<RawApp>, p: PrefsState, r: RulesState): LauncherState {
@@ -285,6 +336,7 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
             .sortedByDescending { it.raw.firstInstall }
             .take(RECENT_COUNT)
         val favorites = p.favorites.mapNotNull { byKey[it] }
+        val folders = p.folders.map { f -> FolderView(f, f.apps.mapNotNull { byKey[it] }) }
         return LauncherState(
             all = entries,
             visible = visible,
@@ -294,6 +346,7 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
             search = AppSearch(entries.map { SearchItem(it.key, it.label, it.hidden) }),
             favoritesFull = p.favorites.size >= se.stilla.launcher.data.StillaPrefs.MAX_FAVORITES,
             rules = r,
+            folders = folders,
         )
     }
 

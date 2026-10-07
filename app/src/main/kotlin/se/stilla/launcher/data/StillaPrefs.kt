@@ -78,6 +78,34 @@ class StillaPrefs(context: Context) {
 
     fun setSetupDone() = update { it.copy(setupDone = true) }
 
+    fun setFoldersOn(on: Boolean) = update { it.copy(foldersOn = on) }
+
+    /** A new folder, with [firstApp] in it. Making your first folder also turns folders on. */
+    fun createFolder(name: String, firstApp: String?) = update { s ->
+        val clean = cleanName(name)
+        if (clean.isEmpty()) return@update s
+        val folder = Folder(id = "f" + System.currentTimeMillis(), name = clean, apps = listOfNotNull(firstApp))
+        s.copy(folders = s.folders + folder, foldersOn = s.foldersOn || s.folders.isEmpty())
+    }
+
+    /** Puts the app in the folder, or takes it out if it's already there. */
+    fun toggleInFolder(folderId: String, appKey: String) = updateFolder(folderId) { f ->
+        if (appKey in f.apps) f.copy(apps = f.apps - appKey) else f.copy(apps = f.apps + appKey)
+    }
+
+    fun renameFolder(folderId: String, name: String) = updateFolder(folderId) { f ->
+        cleanName(name).takeIf { it.isNotEmpty() }?.let { f.copy(name = it) } ?: f
+    }
+
+    /** Only the folder goes; its apps stay in the app list. */
+    fun deleteFolder(folderId: String) = update { s -> s.copy(folders = s.folders.filterNot { it.id == folderId }) }
+
+    private fun updateFolder(folderId: String, change: (Folder) -> Folder) = update { s ->
+        s.copy(folders = s.folders.map { if (it.id == folderId) change(it) else it })
+    }
+
+    private fun cleanName(name: String) = name.replace(Regex("[\\t\\n]"), " ").trim().take(MAX_FOLDER_NAME)
+
     @Synchronized
     private fun update(change: (PrefsState) -> PrefsState) {
         val old = _state.value
@@ -99,6 +127,8 @@ class StillaPrefs(context: Context) {
         setupDone = sp.getBoolean(K_SETUP_DONE, false),
         hideStatusBar = sp.getBoolean(K_HIDE_STATUS_BAR, true),
         showBattery = sp.getBoolean(K_SHOW_BATTERY, true),
+        folders = sp.getString(K_FOLDERS, null).orEmpty().split('\n').mapNotNull(::decodeFolder),
+        foldersOn = sp.getBoolean(K_FOLDERS_ON, false),
     )
 
     private fun write(s: PrefsState) {
@@ -112,6 +142,8 @@ class StillaPrefs(context: Context) {
             .putBoolean(K_SETUP_DONE, s.setupDone)
             .putBoolean(K_HIDE_STATUS_BAR, s.hideStatusBar)
             .putBoolean(K_SHOW_BATTERY, s.showBattery)
+            .putString(K_FOLDERS, s.folders.joinToString("\n", transform = ::encodeFolder))
+            .putBoolean(K_FOLDERS_ON, s.foldersOn)
             .apply()
         val e = renamesSp.edit().clear()
         s.renames.forEach { (k, v) -> e.putString(k, v) }
@@ -129,5 +161,17 @@ class StillaPrefs(context: Context) {
         private const val K_SETUP_DONE = "setup_done"
         private const val K_HIDE_STATUS_BAR = "hide_status_bar"
         private const val K_SHOW_BATTERY = "show_battery"
+        private const val K_FOLDERS = "folders"
+        private const val K_FOLDERS_ON = "folders_on"
+        const val MAX_FOLDER_NAME = 24
+
+        /** One line per folder: id, name, then its app keys, separated by tabs. */
+        private fun encodeFolder(f: Folder): String = (listOf(f.id, f.name) + f.apps).joinToString("\t")
+
+        private fun decodeFolder(line: String): Folder? {
+            val f = line.split('\t')
+            if (f.size < 2 || f[0].isEmpty()) return null
+            return Folder(id = f[0], name = f[1], apps = f.drop(2).filter { it.isNotEmpty() })
+        }
     }
 }

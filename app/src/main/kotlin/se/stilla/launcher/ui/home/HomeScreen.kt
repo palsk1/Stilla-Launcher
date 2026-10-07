@@ -94,18 +94,21 @@ fun HomeScreen(
     onPlayPause: () -> Unit = {},
     onNext: () -> Unit = {},
     showBattery: Boolean = true,
+    /** Swipe up: the folders when they're on, otherwise the app list. */
+    onSwipeUp: () -> Unit = onOpenApps,
 ) {
     val workSuffix = stringResource(R.string.work_suffix)
     val openApps by rememberUpdatedState(onOpenApps)
     val reorder = remember { Reorder() }
     val swipeDown by rememberUpdatedState(onSwipeDown)
+    val swipeUp by rememberUpdatedState(onSwipeUp)
     val swipeThreshold = with(LocalDensity.current) { 48.dp.toPx() }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(LocalBackground.current)
-            // Swipe up or left anywhere: app list. Swipe down: notifications.
+            // Swipe left anywhere: app list. Swipe up: folders (or the app list). Swipe down: notifications.
             // Watches touches before the rows do (Initial pass), so a swipe that
             // starts on a favorite works too, and fires as soon as the finger has
             // moved far enough rather than on release.
@@ -126,7 +129,7 @@ fun HomeScreen(
                         val d = change.position - down.position
                         val vertical = abs(d.y) >= abs(d.x)
                         when {
-                            vertical && d.y < -swipeThreshold -> { fired = true; openApps() }
+                            vertical && d.y < -swipeThreshold -> { fired = true; swipeUp() }
                             vertical && d.y > swipeThreshold -> { fired = true; swipeDown() }
                             !vertical && d.x < -swipeThreshold -> { fired = true; openApps() }
                         }
