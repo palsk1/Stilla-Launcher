@@ -1,3 +1,3 @@
-Scheman: stäng av appar vid vissa tider, till exempel Natt 22–07.
-Inställningar → Scheman. Välj tidstjuvarna eller alla appar, helt stopp eller fråga först.
-Klocka och larm är nu alltid nödvändiga: Stilla täcker eller blockerar aldrig ett larm.
+Mappar: håll in en app och välj Lägg i mapp…, och döp mappen som du vill.
+Svep upp på hemskärmen för att se dina mappar. Svep nedåt eller tryck Hem för att gå tillbaka.
+Svep vänster ger som förut applistan och sökningen. Mappar kan stängas av i inställningarna.
