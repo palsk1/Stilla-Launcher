@@ -147,7 +147,7 @@ private fun FolderPage(
     content: @Composable () -> Unit,
 ) {
     val home by rememberUpdatedState(onHome)
-    val threshold = with(LocalDensity.current) { 48.dp.toPx() }
+    val threshold = with(LocalDensity.current) { StillaDimens.SwipeDistance.toPx() }
     Column(
         modifier = Modifier
             .fillMaxSize()

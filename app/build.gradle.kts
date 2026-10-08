@@ -19,7 +19,7 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 6
-        versionName = "0.5.0"
+        versionName = "0.5.1"
     }
 
     // The Google Play upload key lives next to the project (never in git):

@@ -1,3 +1,2 @@
-Ny inställning: Dagsbudget per tidstjuv (Av som standard). När minuterna är slut är appen stängd till kl. 04 nästa morgon.
-Ny hjälpsida: Inställningar → Hjälp → Svep och genvägar visar vad varje svep och tryck gör.
-Svep höger i applistan tar dig tillbaka till hemskärmen.
+Skärmarna glider nu in i den riktning du sveper, i stället för att blinka till.
+Kortare svep räcker för att byta skärm.

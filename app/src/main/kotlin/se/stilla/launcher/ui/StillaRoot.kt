@@ -1,8 +1,7 @@
 package se.stilla.launcher.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +28,6 @@ import se.stilla.launcher.ui.settings.SettingsScreen
 import se.stilla.launcher.ui.setup.SetupScreen
 import se.stilla.launcher.ui.theme.LocalBackground
 import se.stilla.launcher.ui.theme.StillaColors
-import se.stilla.launcher.ui.theme.StillaDimens
 
 /** Things only the Activity can do (start other apps and system screens). */
 interface LauncherActions {
@@ -73,7 +71,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
     BackHandler(enabled = true) { vm.back() }
 
     Box(modifier = Modifier.fillMaxSize().background(LocalBackground.current)) {
-        Crossfade(targetState = screen, animationSpec = tween(StillaDimens.FadeMs), label = "screen") { s ->
+        AnimatedContent(targetState = screen, transitionSpec = { screenMotion() }, label = "screen") { s ->
             when (s) {
                 Screen.Home -> HomeScreen(
                     favorites = state.favorites,
