@@ -103,7 +103,7 @@ fun HomeScreen(
     val reorder = remember { Reorder() }
     val swipeDown by rememberUpdatedState(onSwipeDown)
     val swipeUp by rememberUpdatedState(onSwipeUp)
-    val swipeThreshold = with(LocalDensity.current) { 48.dp.toPx() }
+    val swipeThreshold = with(LocalDensity.current) { StillaDimens.SwipeDistance.toPx() }
 
     Box(
         modifier = Modifier

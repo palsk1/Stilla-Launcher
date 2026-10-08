@@ -208,7 +208,7 @@ fun AppListScreen(
 @Composable
 private fun Modifier.swipeRight(onSwipe: () -> Unit): Modifier {
     val swipe by rememberUpdatedState(onSwipe)
-    val threshold = with(LocalDensity.current) { 64.dp.toPx() }
+    val threshold = with(LocalDensity.current) { StillaDimens.SwipeDistance.toPx() }
     return pointerInput(Unit) {
         awaitEachGesture {
             val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
@@ -218,7 +218,7 @@ private fun Modifier.swipeRight(onSwipe: () -> Unit): Modifier {
                 if (!change.pressed) break
                 val d = change.position - down.position
                 // Mostly sideways only, so scrolling the list never sends you home by accident.
-                if (d.x > threshold && abs(d.x) > 2 * abs(d.y)) {
+                if (d.x > threshold && abs(d.x) > 1.5f * abs(d.y)) {
                     change.consume()
                     swipe()
                     break

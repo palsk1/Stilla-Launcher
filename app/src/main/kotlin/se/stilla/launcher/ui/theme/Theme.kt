@@ -148,7 +148,8 @@ object StillaDimens {
     val CardRadius = 32.dp
     val ChipRadius = 24.dp
     val Hairline = 1.dp
-    const val FadeMs = 150
+    /** How far a finger has to move before a swipe counts: short, but well past a tap. */
+    val SwipeDistance = 32.dp
 }
 
 /** The page background of the chosen theme. */
