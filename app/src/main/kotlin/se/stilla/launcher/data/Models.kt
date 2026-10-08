@@ -50,4 +50,6 @@ data class PrefsState(
     val folders: List<Folder> = emptyList(),
     /** Swipe up on home opens the folders (otherwise it opens the app list). */
     val foldersOn: Boolean = false,
+    /** Short how-to lines on home and in folders ("Long-press a folder to…"). */
+    val showTips: Boolean = true,
 )

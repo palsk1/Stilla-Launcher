@@ -57,6 +57,8 @@ fun SettingsScreen(
     onOpenSchedules: () -> Unit = {},
     foldersOn: Boolean = false,
     onFoldersOn: (Boolean) -> Unit = {},
+    showTips: Boolean = true,
+    onShowTips: (Boolean) -> Unit = {},
 ) {
     val hidden = state.all.filter { it.hidden }
     val watched = state.all.filter { it.watched }
@@ -164,6 +166,17 @@ fun SettingsScreen(
                 ),
                 selected = foldersOn,
                 onSelect = onFoldersOn,
+            )
+        }
+        item { SubText(stringResource(R.string.settings_tips)) }
+        item {
+            ChoiceRow(
+                options = listOf(
+                    stringResource(R.string.settings_status_bar_shown) to true,
+                    stringResource(R.string.settings_status_bar_hidden) to false,
+                ),
+                selected = showTips,
+                onSelect = onShowTips,
             )
         }
         item { SubText(stringResource(R.string.settings_battery)) }

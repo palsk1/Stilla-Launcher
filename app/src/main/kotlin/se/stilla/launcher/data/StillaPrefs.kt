@@ -80,6 +80,8 @@ class StillaPrefs(context: Context) {
 
     fun setFoldersOn(on: Boolean) = update { it.copy(foldersOn = on) }
 
+    fun setShowTips(show: Boolean) = update { it.copy(showTips = show) }
+
     /** A new folder, with [firstApp] in it. Making your first folder also turns folders on. */
     fun createFolder(name: String, firstApp: String?) = update { s ->
         val clean = cleanName(name)
@@ -129,6 +131,7 @@ class StillaPrefs(context: Context) {
         showBattery = sp.getBoolean(K_SHOW_BATTERY, true),
         folders = sp.getString(K_FOLDERS, null).orEmpty().split('\n').mapNotNull(::decodeFolder),
         foldersOn = sp.getBoolean(K_FOLDERS_ON, false),
+        showTips = sp.getBoolean(K_SHOW_TIPS, true),
     )
 
     private fun write(s: PrefsState) {
@@ -144,6 +147,7 @@ class StillaPrefs(context: Context) {
             .putBoolean(K_SHOW_BATTERY, s.showBattery)
             .putString(K_FOLDERS, s.folders.joinToString("\n", transform = ::encodeFolder))
             .putBoolean(K_FOLDERS_ON, s.foldersOn)
+            .putBoolean(K_SHOW_TIPS, s.showTips)
             .apply()
         val e = renamesSp.edit().clear()
         s.renames.forEach { (k, v) -> e.putString(k, v) }
@@ -163,6 +167,7 @@ class StillaPrefs(context: Context) {
         private const val K_SHOW_BATTERY = "show_battery"
         private const val K_FOLDERS = "folders"
         private const val K_FOLDERS_ON = "folders_on"
+        private const val K_SHOW_TIPS = "show_tips"
         const val MAX_FOLDER_NAME = 24
 
         /** One line per folder: id, name, then its app keys, separated by tabs. */

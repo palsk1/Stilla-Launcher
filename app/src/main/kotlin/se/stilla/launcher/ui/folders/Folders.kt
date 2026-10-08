@@ -67,12 +67,13 @@ fun FoldersScreen(
     onEdit: (String) -> Unit,
     onHome: () -> Unit,
     onAllApps: () -> Unit,
+    showTips: Boolean = true,
 ) {
     val list = rememberLazyListState()
     FolderPage(list = list, onHome = onHome, onAllApps = onAllApps) {
         LazyColumn(state = list, modifier = Modifier.fillMaxSize()) {
             item { Title(stringResource(R.string.folders_title)) }
-            if (folders.isEmpty()) {
+            if (folders.isEmpty() && showTips) {
                 item { Hint(stringResource(R.string.folders_none)) }
             }
             items(folders, key = { it.id }) { folder ->
@@ -91,7 +92,7 @@ fun FoldersScreen(
                     Text(folder.name, style = StillaType.AppName, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
-            if (folders.isNotEmpty()) {
+            if (folders.isNotEmpty() && showTips) {
                 item { Hint(stringResource(R.string.folders_hold_hint)) }
             }
         }
@@ -107,6 +108,7 @@ fun FolderScreen(
     onEdit: () -> Unit,
     onHome: () -> Unit,
     onAllApps: () -> Unit,
+    showTips: Boolean = true,
 ) {
     val list = rememberLazyListState()
     val workSuffix = stringResource(R.string.work_suffix)
@@ -115,7 +117,7 @@ fun FolderScreen(
             item {
                 Title(folder.name, Modifier.quietClickable(onEdit))
             }
-            if (folder.apps.isEmpty()) {
+            if (folder.apps.isEmpty() && showTips) {
                 item { Hint(stringResource(R.string.folder_empty)) }
             }
             items(folder.apps, key = { it.key }) { entry ->
@@ -126,7 +128,7 @@ fun FolderScreen(
                     onLongClick = { onLongPress(entry) },
                 )
             }
-            if (folder.apps.size >= FULL_AT) {
+            if (folder.apps.size >= FULL_AT && showTips) {
                 item { Hint(stringResource(R.string.folder_full)) }
             }
         }

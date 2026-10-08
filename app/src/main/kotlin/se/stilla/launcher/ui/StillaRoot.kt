@@ -96,6 +96,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onNext = vm.media::next,
                     showBattery = prefs.showBattery,
                     onSwipeUp = if (prefs.foldersOn) vm::openFolders else vm::openApps,
+                    showTips = prefs.showTips,
                 )
                 Screen.Folders -> FoldersScreen(
                     folders = state.folders,
@@ -103,6 +104,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onEdit = vm::editFolder,
                     onHome = vm::goHome,
                     onAllApps = vm::openApps,
+                    showTips = prefs.showTips,
                 )
                 Screen.Folder -> state.folders.firstOrNull { it.id == openFolder }?.let { folder ->
                     FolderScreen(
@@ -112,6 +114,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                         onEdit = { vm.editFolder(folder.id) },
                         onHome = vm::goHome,
                         onAllApps = vm::openApps,
+                        showTips = prefs.showTips,
                     )
                 }
                 Screen.Apps -> AppListScreen(
@@ -143,6 +146,8 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onOpenSchedules = vm::openSchedules,
                     foldersOn = prefs.foldersOn,
                     onFoldersOn = vm::setFoldersOn,
+                    showTips = prefs.showTips,
+                    onShowTips = vm::setShowTips,
                 )
                 Screen.Schedules -> SchedulesScreen(
                     schedules = state.rules.schedules,

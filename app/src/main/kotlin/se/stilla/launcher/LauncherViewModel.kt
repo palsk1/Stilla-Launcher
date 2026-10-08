@@ -287,6 +287,7 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     // Folders
 
     fun setFoldersOn(on: Boolean) = prefs.setFoldersOn(on)
+    fun setShowTips(show: Boolean) = prefs.setShowTips(show)
     fun showFolderPicker(key: String) { _menuFor.value = null; _folderPickerFor.value = key }
     fun dismissFolderPicker() { _folderPickerFor.value = null }
     fun createFolder(name: String, appKey: String?) = prefs.createFolder(name, appKey)

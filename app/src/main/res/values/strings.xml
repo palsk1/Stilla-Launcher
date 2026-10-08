@@ -193,4 +193,5 @@
     <string name="folder_delete">Delete folder</string>
     <string name="folder_delete_info">Deleting the folder keeps its apps in the list.</string>
     <string name="settings_folders">Folders (swipe up on home)</string>
+    <string name="settings_tips">Tips on home and in folders</string>
 </resources>

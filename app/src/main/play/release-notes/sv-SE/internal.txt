@@ -1,3 +1,2 @@
-Mappar: håll in en app och välj Lägg i mapp…, och döp mappen som du vill.
-Svep upp på hemskärmen för att se dina mappar. Svep nedåt eller tryck Hem för att gå tillbaka.
-Svep vänster ger som förut applistan och sökningen. Mappar kan stängas av i inställningarna.
+Ny inställning: Tips på hemskärmen och i mappar (Visas/Dolda), under Inställningar → Utseende.
+Då försvinner hjälptexter som "Håll in en mapp för att…".
