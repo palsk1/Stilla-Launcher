@@ -23,6 +23,14 @@ class AlphabetTest {
     }
 }
 
+class MakersTest {
+    @Test fun authenticatorsAreToldApart() {
+        assertEquals("Microsoft", Makers.of("com.azure.authenticator"))
+        assertEquals("Google", Makers.of("com.google.android.apps.authenticator2"))
+        assertEquals("Nordea", Makers.of("com.nordea.mobilebank"))
+    }
+}
+
 class BrowsersTest {
     @Test fun browsersAreNeverSuggested() {
         assertTrue(Browsers.isBrowser("org.mozilla.firefox"))

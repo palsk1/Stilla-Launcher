@@ -17,6 +17,7 @@ import se.stilla.engine.OnTimeOver
 import se.stilla.engine.AppSearch
 import se.stilla.engine.Commitment
 import se.stilla.engine.Essentials
+import se.stilla.engine.Makers
 import se.stilla.engine.Schedule
 import se.stilla.engine.Strictness
 import se.stilla.engine.SearchItem
@@ -49,6 +50,8 @@ data class AppEntry(
     val appId: AppId,
     /** "Ask how long first" is on. */
     val watched: Boolean,
+    /** Who made it, shown only when another app has the same name ("· Google"). */
+    val maker: String? = null,
 )
 
 /** A folder with the apps in it that are still installed. */
@@ -324,6 +327,11 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
                 appId = appId,
                 watched = appId in watchedSet,
             )
+        }.let { list ->
+            // Two apps with the same name (two Authenticators): add who made each.
+            val clashes = list.groupBy { it.label.lowercase() to it.raw.isWork }.filterValues { it.size > 1 }.values.flatten()
+                .map { it.key }.toSet()
+            list.map { if (it.key in clashes) it.copy(maker = Makers.of(it.raw.key.packageName)) else it }
         }.sortedWith(
             compareBy<AppEntry> { Alphabet.orderOf(it.section) }
                 .thenComparator { a, b -> collator.compare(a.label, b.label) }
