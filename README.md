@@ -243,9 +243,6 @@ Inside `app/src/main/kotlin/se/stilla/launcher`:
 | `media/MediaWatcher.kt`, `media/MediaListener.kt` | What's playing and the controls; the listener is the optional Notification access. |
 | `setup/SetupCheck.kt` | Which setup steps are done. |
 
-`guard/WatcherService.kt` and `res/xml/watcher_service.xml` are leftovers from
-the removed accessibility service and can be deleted.
-
 ## Rules this code keeps
 
 - No `INTERNET` permission. Check it any time in App info → Permissions.
