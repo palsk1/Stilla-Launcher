@@ -190,4 +190,27 @@
     <string name="folder_delete_info">Tar du bort mappen finns apparna kvar i listan.</string>
     <string name="settings_folders">Mappar (svep upp på hemskärmen)</string>
     <string name="settings_tips">Tips på hemskärmen och i mappar</string>
+    <string name="settings_budget">Dagsbudget per tidstjuv</string>
+    <string name="settings_budget_info">När minuterna är slut för i dag är appen stängd till kl. 04 nästa morgon. Det går inte att be om mer tid.</string>
+    <string name="settings_help">Hjälp</string>
+    <string name="settings_help_open">Svep och genvägar</string>
+    <string name="help_home">Hemskärmen</string>
+    <string name="help_swipe_left">Svep vänster: alla appar och sök.</string>
+    <string name="help_swipe_up_folders">Svep uppåt: dina mappar.</string>
+    <string name="help_swipe_up_apps">Svep uppåt: alla appar. (Slå på Mappar under Utseende så öppnar svep uppåt dina mappar.)</string>
+    <string name="help_swipe_down">Svep nedåt: aviseringar.</string>
+    <string name="help_clock">Tryck på klockan: Klocka och alarm.</string>
+    <string name="help_date">Tryck på datumet: Kalender.</string>
+    <string name="help_corners">Hörnen längst ner: Telefon till vänster, Kamera till höger.</string>
+    <string name="help_music">Tryck på låten som spelas: öppnar musikappen.</string>
+    <string name="help_apps">Appar</string>
+    <string name="help_hold_app">Håll på en app: favorit, lägg i mapp, byt namn, dölj, viktig app, fråga hur länge eller blockera.</string>
+    <string name="help_drag_favorite">Håll och dra en favorit på hemskärmen: byt ordning.</string>
+    <string name="help_settings">Inställningar: svep vänster och scrolla längst ner i listan.</string>
+    <string name="help_folders">Mappar</string>
+    <string name="help_folders_open">Tryck på en mapp: den fyller skärmen med sina appar.</string>
+    <string name="help_folders_back">Svep nedåt eller tryck Hem: tillbaka till hemskärmen.</string>
+    <string name="help_folders_hold">Håll på en mapp: byt namn eller ta bort den.</string>
+    <string name="help_back_title">Tillbaka</string>
+    <string name="help_back">Telefonens bakåt-knapp eller -svep tar dig ett steg tillbaka.</string>
 </resources>

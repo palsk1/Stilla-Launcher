@@ -102,7 +102,7 @@ class Guard(
         _winsToday.value = engine.winsToday()
         scope.launch {
             combine(store.state, repo.apps) { s, apps -> Triple(s, s.watchedAmong(apps), apps) }.collect { (s, watched, apps) ->
-                engine.setRules(watched.map { WatchRule(it, onTimeOver = s.onTimeOver) })
+                engine.setRules(watched.map { WatchRule(it, onTimeOver = s.onTimeOver, dailyBudgetMin = s.dailyBudgetMin) })
                 engine.setBlocks(s.blocks)
                 // "All apps" means the apps in Stilla's list, so system pop-ups
                 // (permission dialogs, the share sheet) are never blocked. Browsers

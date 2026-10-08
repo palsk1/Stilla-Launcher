@@ -59,6 +59,8 @@ fun SettingsScreen(
     onFoldersOn: (Boolean) -> Unit = {},
     showTips: Boolean = true,
     onShowTips: (Boolean) -> Unit = {},
+    onDailyBudget: (Int?) -> Unit = {},
+    onOpenHelp: () -> Unit = {},
 ) {
     val hidden = state.all.filter { it.hidden }
     val watched = state.all.filter { it.watched }
@@ -109,6 +111,18 @@ fun SettingsScreen(
                 selected = state.rules.onTimeOver,
                 onSelect = onTimeOver,
             )
+        }
+        item { SubText(stringResource(R.string.settings_budget)) }
+        item {
+            ChoiceRow(
+                options = listOf(stringResource(R.string.schedule_off) to null) +
+                    BudgetChoices.map { stringResource(R.string.prompt_minutes, it) to it },
+                selected = state.rules.dailyBudgetMin,
+                onSelect = onDailyBudget,
+            )
+        }
+        if (state.rules.dailyBudgetMin != null) {
+            item { SubText(stringResource(R.string.settings_budget_info)) }
         }
         item {
             val n = state.rules.schedules.size
@@ -211,6 +225,9 @@ fun SettingsScreen(
         item { SubText(stringResource(R.string.settings_essentials_info)) }
         items(essentials, key = { "ess:" + it.key }) { entry -> SubText(entry.label, quiet = false) }
 
+        item { Heading(stringResource(R.string.settings_help)) }
+        item { SubRow(stringResource(R.string.settings_help_open), onOpenHelp) }
+
         item { Heading(stringResource(R.string.settings_setup)) }
         item { SubRow(stringResource(R.string.settings_setup_open), onOpenSetup) }
 
@@ -218,6 +235,9 @@ fun SettingsScreen(
         item { SubText(stringResource(R.string.settings_about_text, versionName)) }
     }
 }
+
+/** Minutes per day for each time-waster. */
+private val BudgetChoices = listOf(15, 30, 45, 60, 90)
 
 private val TextSizes = listOf("S" to 0.85f, "M" to 1f, "L" to 1.15f, "XL" to 1.3f)
 
