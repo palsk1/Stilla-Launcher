@@ -133,6 +133,5 @@ already called "Stilla: Sleep & Meditation"). Phone: Samsung, Swedish UI, 3-butt
 
 ## Housekeeping on the PC
 
-- Delete `app/src/main/res/xml/watcher_service.xml` and `guard/WatcherService.kt` (an empty stub).
 - `Stilla-0.2.0.aab` in the root is a leftover (gitignored).
 - A `Stilla-Launcher` subfolder exists inside the project. Probably a clone of the empty repo; check before deleting.

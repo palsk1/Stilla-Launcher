@@ -175,7 +175,6 @@ Inside `app/src/main/kotlin/se/stilla/launcher`:
 | `ui/guard/GuardScreens.kt` | The prompt, block and time's-up cards. |
 | `guard/GuardActivity.kt` | The cards' own small screen, opened on top of the app you're in and closed once answered. |
 | `guard/Guard.kt` | Hosts the decision engine: app switches in, prompts and kick-outs out, the session timer, screen off. |
-| `guard/WatcherService.kt` | The accessibility service. Package names only; pop-ups and overlays never cause a prompt. |
 | `guard/EngineStore.kt` | Saves open sessions and today's counts so a restart doesn't lose them. |
 | `data/RuleStore.kt` | Watched apps, the time-over choice, active blocks. |
 
