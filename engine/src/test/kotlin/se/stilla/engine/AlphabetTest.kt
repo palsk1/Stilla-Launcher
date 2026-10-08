@@ -23,6 +23,14 @@ class AlphabetTest {
     }
 }
 
+class BrowsersTest {
+    @Test fun browsersAreNeverSuggested() {
+        assertTrue(Browsers.isBrowser("org.mozilla.firefox"))
+        assertTrue(!Distractions.isSuggested("com.android.chrome", Distractions.Category.SOCIAL))
+        assertTrue(Browsers.isBrowser("com.example.web", detected = setOf("com.example.web")))
+    }
+}
+
 class EssentialsTest {
     @Test fun phoneIsAlwaysEssential() {
         assertTrue(Essentials.isEssential("com.samsung.android.dialer", removed = setOf("com.samsung.android.dialer")))

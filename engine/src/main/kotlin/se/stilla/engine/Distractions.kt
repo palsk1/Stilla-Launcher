@@ -76,6 +76,7 @@ object Distractions {
 
     fun isSuggested(packageName: String, category: Category): Boolean = when {
         packageName in NEVER -> false
+        Browsers.isBrowser(packageName) -> false
         packageName in KNOWN -> true
         else -> category == Category.SOCIAL || category == Category.GAME
     }

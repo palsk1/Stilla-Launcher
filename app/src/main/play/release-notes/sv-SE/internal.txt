@@ -1,2 +1,2 @@
 Ny inställning: Tips på hemskärmen och i mappar (Visas/Dolda), under Inställningar → Utseende.
-Då försvinner hjälptexter som "Håll in en mapp för att…".
+Webbläsare (Firefox, Chrome, Samsung Internet med flera) blockeras inte längre av scheman för alla appar.
