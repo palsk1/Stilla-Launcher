@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import se.stilla.engine.AppId
 import se.stilla.engine.BlockReason
+import se.stilla.engine.Browsers
 import se.stilla.engine.DecisionEngine
 import se.stilla.engine.EngineEvent
 import se.stilla.engine.Essentials
@@ -100,9 +101,16 @@ class Guard(
         engineStore.load()?.let(engine::restore)
         _winsToday.value = engine.winsToday()
         scope.launch {
-            combine(store.state, repo.apps) { s, apps -> s to s.watchedAmong(apps) }.collect { (s, watched) ->
+            combine(store.state, repo.apps) { s, apps -> Triple(s, s.watchedAmong(apps), apps) }.collect { (s, watched, apps) ->
                 engine.setRules(watched.map { WatchRule(it, onTimeOver = s.onTimeOver) })
                 engine.setBlocks(s.blocks)
+                // "All apps" means the apps in Stilla's list, so system pop-ups
+                // (permission dialogs, the share sheet) are never blocked. Browsers
+                // are left out too: you need them for too much.
+                val browsers = repo.browserPackages()
+                val all = apps.filterNot { Browsers.isBrowser(it.key.packageName, browsers) }
+                    .map { AppId(it.key.packageName, it.key.userSerial) }.toSet()
+                engine.setSchedules(s.schedules.map { it.resolved(watched, all) })
                 scheduleTick()
             }
         }
@@ -416,10 +424,24 @@ class Guard(
 
     // ---- Helpers ----
 
-    /** Shows a card on its own screen, on top of whatever is in front. */
+    /**
+     * Shows a card on its own screen, on top of whatever is in front. If an
+     * essential app is really in front (a ringing alarm, a call), the card
+     * waits until you next open Stilla instead.
+     */
     private fun present(card: Overlay) {
         show(card)
+        if (essentialInFront()) return
         openCardScreen()
+    }
+
+    /**
+     * Asks Android directly, because [lastFrontPkg] can be a few moments old:
+     * an alarm can start ringing just as you unlock.
+     */
+    private fun essentialInFront(): Boolean {
+        val pkg = poller.latestInFront() ?: return false
+        return pkg != self && isEssential(appIdFor(pkg))
     }
 
     private fun openCardScreen() {

@@ -19,17 +19,31 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 6
-        versionName = "0.2.0"
+        versionName = "0.4.1"
     }
 
     // The Google Play upload key lives next to the project (never in git):
-    // keystore.properties + upload-key.jks. Without them, release falls back to the debug key.
+    // keystore.properties + upload-key.jks. When those are missing (GitHub Actions), the same
+    // values come from environment variables filled from GitHub secrets. Without either,
+    // release falls back to the debug key.
     val keyProps = Properties().apply {
-        rootProject.file("keystore.properties").takeIf { it.exists() }?.inputStream()?.use(::load)
+        val file = rootProject.file("keystore.properties")
+        if (file.exists()) {
+            file.inputStream().use(::load)
+        } else {
+            val env = mapOf(
+                "storeFile" to "STILLA_KEYSTORE_FILE",
+                "storePassword" to "STILLA_KEYSTORE_PASSWORD",
+                "keyAlias" to "STILLA_KEY_ALIAS",
+                "keyPassword" to "STILLA_KEY_PASSWORD",
+            ).mapValues { System.getenv(it.value).orEmpty() }
+            if (env.values.all { it.isNotBlank() }) putAll(env)
+        }
     }
     signingConfigs {
         if (keyProps.isNotEmpty()) {
             create("upload") {
+                // An absolute path (CI) is used as is; a relative one is next to the project.
                 storeFile = rootProject.file(keyProps.getProperty("storeFile"))
                 storePassword = keyProps.getProperty("storePassword")
                 keyAlias = keyProps.getProperty("keyAlias")
@@ -61,11 +75,13 @@ android {
 }
 
 // Google Play: `publishReleaseBundle` builds and uploads to internal testing.
-// Needs play-service-account.json next to the project (never in git); without it, it's switched off.
+// Needs play-service-account.json next to the project (never in git). When it's missing
+// (GitHub Actions), the plugin reads the same JSON from ANDROID_PUBLISHER_CREDENTIALS.
+// Without either, publishing is switched off.
 val playKey = rootProject.file("play-service-account.json")
 play {
-    enabled.set(playKey.exists())
-    serviceAccountCredentials.set(playKey)
+    enabled.set(playKey.exists() || !System.getenv("ANDROID_PUBLISHER_CREDENTIALS").isNullOrBlank())
+    if (playKey.exists()) serviceAccountCredentials.set(playKey)
     track.set("internal")
     defaultToAppBundles.set(true)
     // Version code = highest on Play + 1, so every upload just works.
