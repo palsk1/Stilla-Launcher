@@ -197,7 +197,7 @@
     <string name="settings_help">Help</string>
     <string name="settings_help_open">Swipes and shortcuts</string>
     <string name="help_home">Home screen</string>
-    <string name="help_swipe_left">Swipe left: all apps and search.</string>
+    <string name="help_swipe_left">Swipe left: all apps and search. Swipe right in the list: back home.</string>
     <string name="help_swipe_up_folders">Swipe up: your folders.</string>
     <string name="help_swipe_up_apps">Swipe up: all apps. (Turn on Folders under Display and swipe up opens your folders.)</string>
     <string name="help_swipe_down">Swipe down: notifications.</string>

@@ -126,6 +126,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onLaunch = actions::launch,
                     onLongPress = { vm.showMenu(it.key) },
                     onSettings = vm::openSettings,
+                    onHome = vm::goHome,
                 )
                 Screen.Settings -> SettingsScreen(
                     state = state,

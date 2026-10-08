@@ -195,7 +195,7 @@
     <string name="settings_help">Hjälp</string>
     <string name="settings_help_open">Svep och genvägar</string>
     <string name="help_home">Hemskärmen</string>
-    <string name="help_swipe_left">Svep vänster: alla appar och sök.</string>
+    <string name="help_swipe_left">Svep vänster: alla appar och sök. Svep höger i listan: tillbaka hem.</string>
     <string name="help_swipe_up_folders">Svep uppåt: dina mappar.</string>
     <string name="help_swipe_up_apps">Svep uppåt: alla appar. (Slå på Mappar under Utseende så öppnar svep uppåt dina mappar.)</string>
     <string name="help_swipe_down">Svep nedåt: aviseringar.</string>
