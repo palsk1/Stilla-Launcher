@@ -41,6 +41,14 @@ already called "Stilla: Sleep & Meditation"). Phone: Samsung, Swedish UI, 3-butt
   - It goes to the `internal` track, and the version code is set automatically (Play max + 1).
   - Release notes come from `app/src/main/play/release-notes/sv-SE/internal.txt`: update it each time.
   - Not tested end to end yet. Only the credentials were verified (the listing was read back).
+- **GitHub Actions** (`.github/workflows/play-internal.yml`): every push to `master` (or
+  Actions → "Play internal testing" → Run workflow) runs the engine tests, then
+  `publishReleaseBundle` to internal testing, using the same release notes file.
+  - The Gradle build reads the upload key and the Play key from env vars only when
+    `keystore.properties` / `play-service-account.json` are missing, so the PC build is unchanged.
+  - Repo secrets: `STILLA_UPLOAD_KEYSTORE_BASE64`, `STILLA_KEYSTORE_PASSWORD`, `STILLA_KEY_ALIAS`,
+    `STILLA_KEY_PASSWORD`, `PLAY_SERVICE_ACCOUNT_JSON`. Jan adds them himself; never ask for the values.
+  - Version code stays automatic (Play max + 1); uploads run one at a time.
 - `bootstrapListing` fails with "Please migrate to the new publishing API". That only concerns
   the old in-app-products endpoint, so ignore it.
 - Before any wider release: privacy policy URL, store listing (sv-SE default, add en-US),

@@ -156,7 +156,26 @@ class MainActivity : ComponentActivity(), LauncherActions {
 
     override fun openCamera() = safeStart(Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA))
 
-    override fun openAlarms() = safeStart(Intent(AlarmClock.ACTION_SHOW_ALARMS))
+    /**
+     * Tap the clock: the alarms. Samsung's Clock doesn't answer "show alarms",
+     * so fall back to opening a known clock app, then any app named like one.
+     */
+    override fun openAlarms() {
+        if (tryStart(Intent(AlarmClock.ACTION_SHOW_ALARMS))) return
+        val clock = CLOCK_PACKAGES.firstNotNullOfOrNull(packageManager::getLaunchIntentForPackage)
+            ?: findClockApp()
+        if (clock != null) safeStart(clock) else Toast.makeText(this, R.string.cant_open, Toast.LENGTH_SHORT).show()
+    }
+
+    /** Any launchable app whose package name says "clock", for phones we don't know. */
+    private fun findClockApp(): Intent? {
+        val home = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+        val pkg = packageManager.queryIntentActivities(home, 0)
+            .map { it.activityInfo.packageName }
+            .firstOrNull { it.contains("clock", ignoreCase = true) }
+            ?: return null
+        return packageManager.getLaunchIntentForPackage(pkg)
+    }
 
     override fun openCalendar() =
         safeStart(Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_CALENDAR))
@@ -262,6 +281,15 @@ class MainActivity : ComponentActivity(), LauncherActions {
     }
 
     companion object {
+        /** Clock apps by maker, Samsung first. */
+        private val CLOCK_PACKAGES = listOf(
+            "com.sec.android.app.clockpackage",
+            "com.google.android.deskclock",
+            "com.android.deskclock",
+            "com.android.alarmclock",
+            "com.oneplus.deskclock",
+        )
+
         /** Open the setup checklist (sent by the watcher right after it is switched on). */
         const val EXTRA_SETUP = "se.stilla.launcher.SETUP"
         private const val EXTRA_USER = "android.intent.extra.USER"

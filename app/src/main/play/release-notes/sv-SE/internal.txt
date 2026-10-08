@@ -1,1 +1,3 @@
-Första testversionen via Google Play.
+Ny inställning: Tips på hemskärmen och i mappar (Visas/Dolda), under Inställningar → Utseende.
+Webbläsare (Firefox, Chrome, Samsung Internet med flera) blockeras inte längre av scheman för alla appar.
+Två appar med samma namn visar nu vem som gjort dem, till exempel Authenticator · Google och Authenticator · Microsoft.

@@ -23,10 +23,32 @@ class AlphabetTest {
     }
 }
 
+class MakersTest {
+    @Test fun authenticatorsAreToldApart() {
+        assertEquals("Microsoft", Makers.of("com.azure.authenticator"))
+        assertEquals("Google", Makers.of("com.google.android.apps.authenticator2"))
+        assertEquals("Nordea", Makers.of("com.nordea.mobilebank"))
+    }
+}
+
+class BrowsersTest {
+    @Test fun browsersAreNeverSuggested() {
+        assertTrue(Browsers.isBrowser("org.mozilla.firefox"))
+        assertTrue(!Distractions.isSuggested("com.android.chrome", Distractions.Category.SOCIAL))
+        assertTrue(Browsers.isBrowser("com.example.web", detected = setOf("com.example.web")))
+    }
+}
+
 class EssentialsTest {
     @Test fun phoneIsAlwaysEssential() {
         assertTrue(Essentials.isEssential("com.samsung.android.dialer", removed = setOf("com.samsung.android.dialer")))
         assertTrue(!Essentials.canRemove("com.samsung.android.dialer"))
+    }
+
+    @Test fun alarmClockIsAlwaysEssential() {
+        val clock = "com.sec.android.app.clockpackage"
+        assertTrue(Essentials.isEssential(clock, removed = setOf(clock)))
+        assertTrue(!Essentials.canRemove(clock))
     }
 
     @Test fun defaultsCanBeTurnedOff() {

@@ -59,6 +59,11 @@ fun AppRowContent(
         Text(
             text = buildAnnotatedString {
                 append(entry.label)
+                entry.maker?.let { maker ->
+                    withStyle(SpanStyle(color = StillaColors.TextQuiet, fontSize = 13.sp)) {
+                        append("  · $maker")
+                    }
+                }
                 if (entry.raw.isWork) {
                     withStyle(SpanStyle(color = StillaColors.TextQuiet, fontSize = 13.sp)) {
                         append("  · $workSuffix")

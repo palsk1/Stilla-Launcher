@@ -124,6 +124,36 @@ fun HomeGreyXlPreview() = StillaTheme(theme = ThemeChoice.DARK_GREY, textScale =
     )
 }
 
+@Preview(name = "Home · silver", device = PHONE, showBackground = true)
+@Composable
+fun HomeSilverPreview() = StillaTheme(theme = ThemeChoice.SILVER) {
+    HomeScreen(
+        favorites = sampleState().favorites, isDefaultHome = true,
+        onOpenApps = noop, onLaunch = {}, onLongPress = {}, onPhone = noop, onCamera = noop,
+        onClock = noop, onDate = noop, onSetDefault = noop,
+    )
+}
+
+@Preview(name = "Home · graphite", device = PHONE, showBackground = true)
+@Composable
+fun HomeGraphitePreview() = StillaTheme(theme = ThemeChoice.GRAPHITE) {
+    HomeScreen(
+        favorites = sampleState().favorites, isDefaultHome = true,
+        onOpenApps = noop, onLaunch = {}, onLongPress = {}, onPhone = noop, onCamera = noop,
+        onClock = noop, onDate = noop, onSetDefault = noop,
+    )
+}
+
+@Preview(name = "Home · paper", device = PHONE, showBackground = true)
+@Composable
+fun HomePaperPreview() = StillaTheme(theme = ThemeChoice.PAPER) {
+    HomeScreen(
+        favorites = sampleState().favorites, isDefaultHome = true,
+        onOpenApps = noop, onLaunch = {}, onLongPress = {}, onPhone = noop, onCamera = noop,
+        onClock = noop, onDate = noop, onSetDefault = noop,
+    )
+}
+
 // ---- App list ----
 
 @Preview(name = "App list", device = PHONE, showBackground = true, backgroundColor = 0xFF000000)

@@ -17,7 +17,13 @@ import se.stilla.launcher.Screen
 import se.stilla.launcher.ui.apps.AppListScreen
 import se.stilla.launcher.ui.apps.AppMenuSheet
 import se.stilla.launcher.ui.apps.RenameDialog
+import se.stilla.launcher.ui.folders.FolderEditDialog
+import se.stilla.launcher.ui.folders.FolderPickerDialog
+import se.stilla.launcher.ui.folders.FolderScreen
+import se.stilla.launcher.ui.folders.FoldersScreen
 import se.stilla.launcher.ui.home.HomeScreen
+import se.stilla.launcher.ui.schedules.ScheduleEditScreen
+import se.stilla.launcher.ui.schedules.SchedulesScreen
 import se.stilla.launcher.ui.settings.SettingsScreen
 import se.stilla.launcher.ui.setup.SetupScreen
 import se.stilla.launcher.ui.theme.LocalBackground
@@ -57,6 +63,10 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
     val watcherEnabled by vm.watcherEnabled.collectAsStateWithLifecycle()
     val setup by vm.setup.collectAsStateWithLifecycle()
     val nowPlaying by vm.media.now.collectAsStateWithLifecycle()
+    val editing by vm.editing.collectAsStateWithLifecycle()
+    val openFolder by vm.openFolder.collectAsStateWithLifecycle()
+    val folderPickerFor by vm.folderPickerFor.collectAsStateWithLifecycle()
+    val editingFolder by vm.editingFolder.collectAsStateWithLifecycle()
 
     // Back goes Settings → Apps → Home, and does nothing on Home.
     BackHandler(enabled = true) { vm.back() }
@@ -84,7 +94,29 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onPrevious = vm.media::previous,
                     onPlayPause = vm.media::playPause,
                     onNext = vm.media::next,
+                    showBattery = prefs.showBattery,
+                    onSwipeUp = if (prefs.foldersOn) vm::openFolders else vm::openApps,
+                    showTips = prefs.showTips,
                 )
+                Screen.Folders -> FoldersScreen(
+                    folders = state.folders,
+                    onOpen = vm::openFolder,
+                    onEdit = vm::editFolder,
+                    onHome = vm::goHome,
+                    onAllApps = vm::openApps,
+                    showTips = prefs.showTips,
+                )
+                Screen.Folder -> state.folders.firstOrNull { it.id == openFolder }?.let { folder ->
+                    FolderScreen(
+                        folder = folder,
+                        onLaunch = actions::launch,
+                        onLongPress = { vm.showMenu(it.key) },
+                        onEdit = { vm.editFolder(folder.id) },
+                        onHome = vm::goHome,
+                        onAllApps = vm::openApps,
+                        showTips = prefs.showTips,
+                    )
+                }
                 Screen.Apps -> AppListScreen(
                     state = state,
                     query = query,
@@ -109,7 +141,29 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onOpenSetup = vm::openSetup,
                     hideStatusBar = prefs.hideStatusBar,
                     onHideStatusBar = vm::setHideStatusBar,
+                    showBattery = prefs.showBattery,
+                    onShowBattery = vm::setShowBattery,
+                    onOpenSchedules = vm::openSchedules,
+                    foldersOn = prefs.foldersOn,
+                    onFoldersOn = vm::setFoldersOn,
+                    showTips = prefs.showTips,
+                    onShowTips = vm::setShowTips,
                 )
+                Screen.Schedules -> SchedulesScreen(
+                    schedules = state.rules.schedules,
+                    onOpen = vm::editSchedule,
+                    onNew = vm::newSchedule,
+                )
+                Screen.ScheduleEdit -> editing?.let { draft ->
+                    ScheduleEditScreen(
+                        initial = draft,
+                        isNew = state.rules.schedules.none { it.id == draft.id },
+                        runningUntil = state.rules.schedules.firstOrNull { it.id == draft.id }?.let(vm::runningUntil),
+                        onSave = vm::saveSchedule,
+                        onDelete = { vm.deleteSchedule(draft.id) },
+                        onCancel = vm::openSchedules,
+                    )
+                }
                 Screen.Setup -> SetupScreen(
                     status = setup,
                     onHome = actions::requestDefaultHome,
@@ -145,6 +199,38 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                 onUninstall = { actions.uninstall(entry) },
                 onToggleWatched = { vm.setWatched(entry, !entry.watched) },
                 onBlock = { ms -> vm.blockApp(entry, ms) },
+                onAddToFolder = { vm.showFolderPicker(entry.key) },
+            )
+        }
+    }
+
+    val pickerKey = folderPickerFor
+    if (pickerKey != null) {
+        val entry = state.byKey[pickerKey]
+        if (entry == null) {
+            LaunchedEffect(pickerKey) { vm.dismissFolderPicker() }
+        } else {
+            FolderPickerDialog(
+                entry = entry,
+                folders = state.folders,
+                onToggle = { vm.toggleInFolder(it, entry.key) },
+                onCreate = { vm.createFolder(it, entry.key) },
+                onDismiss = vm::dismissFolderPicker,
+            )
+        }
+    }
+
+    val folderId = editingFolder
+    if (folderId != null) {
+        val folder = state.folders.firstOrNull { it.id == folderId }
+        if (folder == null) {
+            LaunchedEffect(folderId) { vm.dismissEditFolder() }
+        } else {
+            FolderEditDialog(
+                folder = folder,
+                onRename = { vm.renameFolder(folder.id, it) },
+                onDelete = { vm.deleteFolder(folder.id) },
+                onDismiss = vm::dismissEditFolder,
             )
         }
     }

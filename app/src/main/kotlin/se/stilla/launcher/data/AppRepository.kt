@@ -2,7 +2,10 @@ package se.stilla.launcher.data
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.content.pm.LauncherApps
 import android.os.Handler
 import android.os.Looper
@@ -93,6 +96,17 @@ class AppRepository(private val context: Context) {
             }
         }
         return result
+    }
+
+    /** Apps that open ordinary web links: the browsers. */
+    fun browserPackages(): Set<String> = try {
+        val web = Intent(Intent.ACTION_VIEW, Uri.parse("https://example.com")).addCategory(Intent.CATEGORY_BROWSABLE)
+        context.packageManager.queryIntentActivities(web, PackageManager.MATCH_ALL)
+            .mapNotNull { it.activityInfo?.packageName }
+            .toSet()
+    } catch (e: Exception) {
+        Log.w(TAG, "Couldn't list browsers", e)
+        emptySet()
     }
 
     private fun saveSnapshot(apps: List<RawApp>) {
