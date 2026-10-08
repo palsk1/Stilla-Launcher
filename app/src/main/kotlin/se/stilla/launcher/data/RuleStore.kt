@@ -48,6 +48,8 @@ data class RulesState(
     val added: Set<AppId> = emptySet(),
     val removed: Set<AppId> = emptySet(),
     val onTimeOver: OnTimeOver = OnTimeOver.EXTEND_MINDFULLY,
+    /** Minutes per day each time-waster may be used; null = no budget (the default). */
+    val dailyBudgetMin: Int? = null,
     val blocks: List<Block> = emptyList(),
     val schedules: List<SavedSchedule> = emptyList(),
 ) {
@@ -77,6 +79,8 @@ class RuleStore(context: Context) {
 
     fun setOnTimeOver(mode: OnTimeOver) = update { it.copy(onTimeOver = mode) }
 
+    fun setDailyBudget(minutes: Int?) = update { it.copy(dailyBudgetMin = minutes) }
+
     fun setBlocks(blocks: List<Block>) = update { it.copy(blocks = blocks) }
 
     /** Adds the schedule, or replaces the one with the same id. */
@@ -96,6 +100,7 @@ class RuleStore(context: Context) {
             .putStringSet(K_ADDED, new.added.map(::encodeApp).toSet())
             .putStringSet(K_REMOVED, new.removed.map(::encodeApp).toSet())
             .putString(K_TIME_OVER, new.onTimeOver.name)
+            .putInt(K_BUDGET, new.dailyBudgetMin ?: 0)
             .putString(K_BLOCKS, new.blocks.joinToString("\n", transform = ::encodeBlock))
             .putString(K_SCHEDULES, new.schedules.joinToString("\n", transform = ::encodeSchedule))
             .apply()
@@ -107,6 +112,7 @@ class RuleStore(context: Context) {
         removed = sp.getStringSet(K_REMOVED, null).orEmpty().mapNotNull(::decodeApp).toSet(),
         onTimeOver = runCatching { OnTimeOver.valueOf(sp.getString(K_TIME_OVER, null) ?: "") }
             .getOrDefault(OnTimeOver.EXTEND_MINDFULLY),
+        dailyBudgetMin = sp.getInt(K_BUDGET, 0).takeIf { it > 0 },
         blocks = sp.getString(K_BLOCKS, null).orEmpty().split('\n').mapNotNull(::decodeBlock),
         schedules = sp.getString(K_SCHEDULES, null).orEmpty().split('\n').mapNotNull(::decodeSchedule),
     )
@@ -115,6 +121,7 @@ class RuleStore(context: Context) {
         private const val K_ADDED = "watched_added"
         private const val K_REMOVED = "watched_removed"
         private const val K_TIME_OVER = "on_time_over"
+        private const val K_BUDGET = "daily_budget_min"
         private const val K_BLOCKS = "blocks"
         private const val K_SCHEDULES = "schedules"
 

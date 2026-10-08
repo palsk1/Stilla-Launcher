@@ -43,7 +43,9 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -61,6 +63,7 @@ import se.stilla.launcher.ui.theme.LocalBackground
 import se.stilla.launcher.ui.theme.StillaColors
 import se.stilla.launcher.ui.theme.StillaDimens
 import se.stilla.launcher.ui.theme.StillaType
+import kotlin.math.abs
 
 private sealed interface ListRow {
     val id: String
@@ -83,6 +86,7 @@ fun AppListScreen(
     onLaunch: (AppEntry) -> Unit,
     onLongPress: (AppEntry) -> Unit,
     onSettings: () -> Unit,
+    onHome: () -> Unit = {},
 ) {
     val workSuffix = stringResource(R.string.work_suffix)
     val recentLabel = stringResource(R.string.recently_installed)
@@ -147,7 +151,7 @@ fun AppListScreen(
             focusRequester = focusRequester,
         )
 
-        Row(modifier = Modifier.weight(1f).fillMaxWidth()) {
+        Row(modifier = Modifier.weight(1f).fillMaxWidth().swipeRight(onHome)) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier.weight(1f).fillMaxHeight().nestedScroll(hideKeyboardOnDrag),
@@ -195,6 +199,30 @@ fun AppListScreen(
                         sectionStarts[letter]?.let { i -> scope.launch { listState.scrollToItem(i) } }
                     },
                 )
+            }
+        }
+    }
+}
+
+/** Swipe right goes back home: the opposite of the swipe left that opened the list. */
+@Composable
+private fun Modifier.swipeRight(onSwipe: () -> Unit): Modifier {
+    val swipe by rememberUpdatedState(onSwipe)
+    val threshold = with(LocalDensity.current) { 64.dp.toPx() }
+    return pointerInput(Unit) {
+        awaitEachGesture {
+            val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+            while (true) {
+                val event = awaitPointerEvent(PointerEventPass.Initial)
+                val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                if (!change.pressed) break
+                val d = change.position - down.position
+                // Mostly sideways only, so scrolling the list never sends you home by accident.
+                if (d.x > threshold && abs(d.x) > 2 * abs(d.y)) {
+                    change.consume()
+                    swipe()
+                    break
+                }
             }
         }
     }

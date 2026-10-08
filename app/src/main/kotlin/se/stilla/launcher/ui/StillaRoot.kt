@@ -22,6 +22,7 @@ import se.stilla.launcher.ui.folders.FolderPickerDialog
 import se.stilla.launcher.ui.folders.FolderScreen
 import se.stilla.launcher.ui.folders.FoldersScreen
 import se.stilla.launcher.ui.home.HomeScreen
+import se.stilla.launcher.ui.settings.HelpScreen
 import se.stilla.launcher.ui.schedules.ScheduleEditScreen
 import se.stilla.launcher.ui.schedules.SchedulesScreen
 import se.stilla.launcher.ui.settings.SettingsScreen
@@ -98,6 +99,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onSwipeUp = if (prefs.foldersOn) vm::openFolders else vm::openApps,
                     showTips = prefs.showTips,
                 )
+                Screen.Help -> HelpScreen(foldersOn = prefs.foldersOn)
                 Screen.Folders -> FoldersScreen(
                     folders = state.folders,
                     onOpen = vm::openFolder,
@@ -124,6 +126,7 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onLaunch = actions::launch,
                     onLongPress = { vm.showMenu(it.key) },
                     onSettings = vm::openSettings,
+                    onHome = vm::goHome,
                 )
                 Screen.Settings -> SettingsScreen(
                     state = state,
@@ -148,6 +151,8 @@ fun StillaRoot(vm: LauncherViewModel, actions: LauncherActions) {
                     onFoldersOn = vm::setFoldersOn,
                     showTips = prefs.showTips,
                     onShowTips = vm::setShowTips,
+                    onDailyBudget = vm::setDailyBudget,
+                    onOpenHelp = vm::openHelp,
                 )
                 Screen.Schedules -> SchedulesScreen(
                     schedules = state.rules.schedules,

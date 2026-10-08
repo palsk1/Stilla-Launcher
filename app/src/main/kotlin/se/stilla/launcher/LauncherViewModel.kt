@@ -35,7 +35,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Locale
 
-enum class Screen { Home, Apps, Settings, Setup, Schedules, ScheduleEdit, Folders, Folder }
+enum class Screen { Home, Apps, Settings, Setup, Schedules, ScheduleEdit, Folders, Folder, Help }
 
 /** One row in the app list: the app plus your settings for it. */
 data class AppEntry(
@@ -251,6 +251,7 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
         Screen.ScheduleEdit -> { openSchedules(); true }
         Screen.Folders -> { goHome(); true }
         Screen.Folder -> { openFolders(); true }
+        Screen.Help -> { _screen.value = Screen.Settings; true }
     }
 
     fun setQuery(q: String) {
@@ -282,6 +283,8 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     fun setTheme(theme: ThemeChoice) = prefs.setTheme(theme)
     fun setWatched(entry: AppEntry, watched: Boolean) = ruleStore.setWatched(entry.appId, watched)
     fun setOnTimeOver(mode: OnTimeOver) = ruleStore.setOnTimeOver(mode)
+    fun setDailyBudget(minutes: Int?) = ruleStore.setDailyBudget(minutes)
+    fun openHelp() { _screen.value = Screen.Help }
     fun blockApp(entry: AppEntry, durationMs: Long) = guard.blockApp(entry.appId, durationMs)
     fun setTextScale(scale: Float) = prefs.setTextScale(scale)
     fun setHideStatusBar(hide: Boolean) = prefs.setHideStatusBar(hide)

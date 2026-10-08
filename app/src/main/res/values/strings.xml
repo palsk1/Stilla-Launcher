@@ -192,4 +192,27 @@
     <string name="folder_delete_info">Deleting the folder keeps its apps in the list.</string>
     <string name="settings_folders">Folders (swipe up on home)</string>
     <string name="settings_tips">Tips on home and in folders</string>
+    <string name="settings_budget">Daily budget per time-waster</string>
+    <string name="settings_budget_info">When today\'s minutes are used up, the app stays closed until 04:00 next morning. You can\'t ask for more time.</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_help_open">Swipes and shortcuts</string>
+    <string name="help_home">Home screen</string>
+    <string name="help_swipe_left">Swipe left: all apps and search. Swipe right in the list: back home.</string>
+    <string name="help_swipe_up_folders">Swipe up: your folders.</string>
+    <string name="help_swipe_up_apps">Swipe up: all apps. (Turn on Folders under Display and swipe up opens your folders.)</string>
+    <string name="help_swipe_down">Swipe down: notifications.</string>
+    <string name="help_clock">Tap the clock: Clock and alarms.</string>
+    <string name="help_date">Tap the date: Calendar.</string>
+    <string name="help_corners">Bottom corners: Phone on the left, Camera on the right.</string>
+    <string name="help_music">Tap the playing song: opens the music app.</string>
+    <string name="help_apps">Apps</string>
+    <string name="help_hold_app">Hold an app: favourite, add to folder, rename, hide, essential, ask how long, or block.</string>
+    <string name="help_drag_favorite">Hold and drag a favourite on home: change the order.</string>
+    <string name="help_settings">Settings: swipe left and scroll to the bottom of the list.</string>
+    <string name="help_folders">Folders</string>
+    <string name="help_folders_open">Tap a folder: it fills the screen with its apps.</string>
+    <string name="help_folders_back">Swipe down or tap Home: back to home.</string>
+    <string name="help_folders_hold">Hold a folder: rename or delete it.</string>
+    <string name="help_back_title">Back</string>
+    <string name="help_back">The phone\'s back button or swipe takes you one step back.</string>
 </resources>
