@@ -24,6 +24,12 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
+        <!-- Which apps are web browsers: they are never blocked as a whole. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
     </queries>
 
     <!-- No INTERNET permission, on purpose: nothing Stilla sees can leave the phone. -->

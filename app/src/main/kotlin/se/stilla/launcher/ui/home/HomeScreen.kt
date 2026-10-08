@@ -96,6 +96,7 @@ fun HomeScreen(
     showBattery: Boolean = true,
     /** Swipe up: the folders when they're on, otherwise the app list. */
     onSwipeUp: () -> Unit = onOpenApps,
+    showTips: Boolean = true,
 ) {
     val workSuffix = stringResource(R.string.work_suffix)
     val openApps by rememberUpdatedState(onOpenApps)
@@ -174,7 +175,7 @@ fun HomeScreen(
                 contentAlignment = Alignment.TopStart,
             ) {
                 Column(modifier = Modifier.padding(top = 40.dp)) {
-                    if (favorites.isEmpty()) {
+                    if (favorites.isEmpty() && showTips) {
                         Text(
                             text = stringResource(R.string.home_hint),
                             style = StillaType.Body,

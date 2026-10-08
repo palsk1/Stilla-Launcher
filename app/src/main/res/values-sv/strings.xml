@@ -159,7 +159,7 @@
     <string name="schedule_scope_watched_short">tidstjuvar</string>
     <string name="schedule_scope_all_short">alla appar</string>
     <string name="schedule_scope_watched_info">Apparna som frågar hur länge, till exempel Instagram och YouTube.</string>
-    <string name="schedule_scope_all_info">Alla appar i listan utom de nödvändiga (Telefon, Klocka, Meddelanden, BankID med flera).</string>
+    <string name="schedule_scope_all_info">Alla appar i listan utom webbläsare och de nödvändiga (Telefon, Klocka, Meddelanden, BankID med flera).</string>
     <string name="schedule_strictness">Hur strikt</string>
     <string name="schedule_hard">Helt stopp</string>
     <string name="schedule_soft">Fråga först</string>
@@ -191,4 +191,5 @@
     <string name="folder_delete">Ta bort mappen</string>
     <string name="folder_delete_info">Tar du bort mappen finns apparna kvar i listan.</string>
     <string name="settings_folders">Mappar (svep upp på hemskärmen)</string>
+    <string name="settings_tips">Tips på hemskärmen och i mappar</string>
 </resources>

@@ -161,7 +161,7 @@
     <string name="schedule_scope_watched_short">time-wasters</string>
     <string name="schedule_scope_all_short">all apps</string>
     <string name="schedule_scope_watched_info">The apps that ask how long, for example Instagram and YouTube.</string>
-    <string name="schedule_scope_all_info">Every app in the list except the essentials (Phone, Clock, Messages, BankID and more).</string>
+    <string name="schedule_scope_all_info">Every app in the list except browsers and the essentials (Phone, Clock, Messages, BankID and more).</string>
     <string name="schedule_strictness">How strict</string>
     <string name="schedule_hard">Fully off</string>
     <string name="schedule_soft">Ask first</string>
@@ -193,4 +193,5 @@
     <string name="folder_delete">Delete folder</string>
     <string name="folder_delete_info">Deleting the folder keeps its apps in the list.</string>
     <string name="settings_folders">Folders (swipe up on home)</string>
+    <string name="settings_tips">Tips on home and in folders</string>
 </resources>

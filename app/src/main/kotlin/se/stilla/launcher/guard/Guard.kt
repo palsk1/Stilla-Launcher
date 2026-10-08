@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import se.stilla.engine.AppId
 import se.stilla.engine.BlockReason
+import se.stilla.engine.Browsers
 import se.stilla.engine.DecisionEngine
 import se.stilla.engine.EngineEvent
 import se.stilla.engine.Essentials
@@ -104,8 +105,11 @@ class Guard(
                 engine.setRules(watched.map { WatchRule(it, onTimeOver = s.onTimeOver) })
                 engine.setBlocks(s.blocks)
                 // "All apps" means the apps in Stilla's list, so system pop-ups
-                // (permission dialogs, the share sheet) are never blocked.
-                val all = apps.map { AppId(it.key.packageName, it.key.userSerial) }.toSet()
+                // (permission dialogs, the share sheet) are never blocked. Browsers
+                // are left out too: you need them for too much.
+                val browsers = repo.browserPackages()
+                val all = apps.filterNot { Browsers.isBrowser(it.key.packageName, browsers) }
+                    .map { AppId(it.key.packageName, it.key.userSerial) }.toSet()
                 engine.setSchedules(s.schedules.map { it.resolved(watched, all) })
                 scheduleTick()
             }
